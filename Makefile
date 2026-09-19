@@ -13,10 +13,15 @@ APP_SRC    := $(wildcard Sources/SnapIt/*.swift)
 TEST_SRC   := $(wildcard Tests/*.swift)
 
 SWIFTC     := swiftc
+
+# Ad hoc ("-") signing gives the binary a new code hash on every build, which
+# makes macOS quietly stop honouring the Accessibility grant. Point this at a
+# self signed identity (make signing-identity) and the grant survives rebuilds.
+SIGN_IDENTITY ?= -
 ARCHS      := arm64 x86_64
 FLAGS      := -O -swift-version 5 -framework Cocoa -framework Carbon -framework ServiceManagement
 
-.PHONY: all build app test lint run install uninstall reset-permission import-divvy clean dev-web
+.PHONY: all build app test lint run install uninstall reset-permission signing-identity import-divvy clean dev-web
 
 all: app
 
@@ -40,8 +45,8 @@ app: build
 		-e 's/__MIN_OS__/$(DEPLOY_MIN)/g' Resources/Info.plist > "$(APP_BUNDLE)/Contents/Info.plist"
 	@bash scripts/make-icns.sh assets/icon.png "$(APP_BUNDLE)/Contents/Resources/AppIcon.icns"
 	@printf 'APPL????' > "$(APP_BUNDLE)/Contents/PkgInfo"
-	@codesign --force --deep --sign - "$(APP_BUNDLE)" 2>/dev/null || \
-		echo "  note: ad hoc signing unavailable, the app still runs"
+	@codesign --force --sign "$(SIGN_IDENTITY)" "$(APP_BUNDLE)" 2>/dev/null || \
+		echo "  note: signing unavailable, the app still runs"
 	@echo "built $(APP_BUNDLE)"
 
 ## Run the unit tests.
@@ -61,6 +66,10 @@ install: app
 	@cp -R "$(APP_BUNDLE)" "/Applications/$(APP).app"
 	@open "/Applications/$(APP).app"
 	@echo "installed /Applications/$(APP).app"
+
+## Create a self signed identity so the Accessibility grant survives rebuilds.
+signing-identity:
+	@bash scripts/make-signing-identity.sh
 
 ## Clear Snap It's Accessibility grant. Rebuilding changes the app's ad hoc
 ## signature, which makes macOS stop trusting the old grant while still

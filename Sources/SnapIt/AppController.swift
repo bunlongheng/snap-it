@@ -60,10 +60,12 @@ final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
         try store.save(newConfig)
         config = newConfig
         reloadShortcuts()
-        rebuildMenu()
     }
 
     var currentConfig: Config { config }
+
+    /// Layouts whose shortcut another application already owns.
+    var shortcutConflicts: [String] { hotKeys?.conflicts ?? [] }
 
     private func reloadShortcuts() {
         hotKeys?.reload(with: config.layouts)
@@ -88,6 +90,9 @@ final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func promptForAccessibility() {
+        // A grant that was later revoked earns one fresh explanation.
+        if AccessibilityPermission.isTrusted { hasPromptedForAccessibility = false }
+
         // Beep and leave the reminder in the menu rather than stacking alerts
         // on every keypress.
         guard !hasPromptedForAccessibility, NSApp.modalWindow == nil else {

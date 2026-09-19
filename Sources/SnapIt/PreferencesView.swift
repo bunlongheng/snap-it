@@ -3,6 +3,8 @@ import SwiftUI
 struct PreferencesView: View {
     @ObservedObject var model: PreferencesModel
 
+    @State private var confirmingDelete = false
+
     var body: some View {
         NavigationSplitView {
             sidebar
@@ -12,6 +14,8 @@ struct PreferencesView: View {
         }
         .frame(minWidth: 680, minHeight: 480)
         .safeAreaInset(edge: .bottom, spacing: 0) { footer }
+        .onAppear { model.startWatching() }
+        .onDisappear { model.stopWatching() }
     }
 
     // MARK: - Sidebar
@@ -37,11 +41,20 @@ struct PreferencesView: View {
                 }
                 .accessibilityLabel("Add layout")
 
-                Button(action: model.removeSelected) {
+                Button(action: { confirmingDelete = true }) {
                     Image(systemName: "minus")
                 }
                 .disabled(model.selection == nil)
                 .accessibilityLabel("Remove layout")
+                .confirmationDialog(
+                    "Delete \(model.selectedLayout?.name ?? "this layout")?",
+                    isPresented: $confirmingDelete
+                ) {
+                    Button("Delete", role: .destructive, action: model.removeSelected)
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Its shortcut is freed. This cannot be undone.")
+                }
 
                 Spacer()
 
@@ -61,18 +74,31 @@ struct PreferencesView: View {
         if let id = model.selection, let layout = model.binding(for: id) {
             LayoutEditor(layout: layout, model: model)
                 .id(id)
+        } else if model.config.layouts.isEmpty {
+            placeholder(
+                symbol: "tray",
+                title: "No layouts left",
+                message: "Add one with the plus button, or bring the defaults back."
+            )
         } else {
-            VStack(spacing: 8) {
-                Image(systemName: "rectangle.dashed")
-                    .font(.system(size: 34))
-                    .foregroundStyle(.tertiary)
-                Text("No layout selected").font(.title3)
-                Text("Pick a layout on the left, or add one.")
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .accessibilityElement(children: .combine)
+            placeholder(
+                symbol: "rectangle.dashed",
+                title: "No layout selected",
+                message: "Pick a layout on the left, or add one."
+            )
         }
+    }
+
+    private func placeholder(symbol: String, title: String, message: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: symbol)
+                .font(.system(size: 34))
+                .foregroundStyle(.tertiary)
+            Text(title).font(.title3)
+            Text(message).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Footer
@@ -88,6 +114,18 @@ struct PreferencesView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
+            }
+
+            if !model.shortcutConflicts.isEmpty {
+                Label(
+                    "Already in use by another app: \(model.shortcutConflicts.joined(separator: ", "))",
+                    systemImage: "exclamationmark.triangle"
+                )
+                .font(.callout)
+                .foregroundStyle(.orange)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 10)
             }
 
             if !model.isTrusted {
@@ -149,8 +187,8 @@ struct PreferencesView: View {
                 }
 
                 Toggle("Launch at login", isOn: Binding(
-                    get: { LaunchAtLogin.isEnabled },
-                    set: { _ = LaunchAtLogin.set($0) }
+                    get: { model.launchAtLogin },
+                    set: model.setLaunchAtLogin
                 ))
                 .toggleStyle(.checkbox)
 

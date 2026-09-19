@@ -12,6 +12,10 @@ final class ConfigStore {
         self.url = url
     }
 
+    /// A config of this shape is a few kilobytes. Anything far past that is a
+    /// mistake, and there is no reason to decode it.
+    static let maximumFileSize = 512 * 1024
+
     /// `~/Library/Application Support/SnapIt/config.json`
     static func defaultURL(
         fileManager: FileManager = .default
@@ -28,6 +32,14 @@ final class ConfigStore {
         let data: Data
         do {
             data = try Data(contentsOf: url)
+            guard data.count <= ConfigStore.maximumFileSize else {
+                throw SnapItError.configUnreadable(
+                    path: url.path,
+                    reason: "the file is larger than \(ConfigStore.maximumFileSize / 1024) KB"
+                )
+            }
+        } catch let error as SnapItError {
+            throw error
         } catch {
             throw SnapItError.configUnreadable(path: url.path, reason: error.localizedDescription)
         }

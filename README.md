@@ -50,9 +50,17 @@ Then allow it to move windows:
 
 **System Settings → Privacy & Security → Accessibility → Snap It**
 
-> Rebuilding the app changes its ad hoc signature, which quietly invalidates that
-> approval while still showing the old entry as enabled. After a rebuild, run
-> `make reset-permission` and approve it once more.
+> **If you are going to rebuild:** an ad hoc signature changes with every build, and
+> macOS ties the Accessibility grant to the binary it saw, so a rebuild silently loses
+> the permission while System Settings still shows it enabled. Two ways out:
+>
+> ```bash
+> make signing-identity                              # once: a stable self signed identity
+> make install SIGN_IDENTITY="Snap It Local Signing" # the grant now survives rebuilds
+> ```
+>
+> Or keep ad hoc signing and run `make reset-permission` after each rebuild, then
+> approve it again.
 
 ## Default shortcuts
 
@@ -137,7 +145,7 @@ Sources/SnapIt/      the app: menu bar, hot keys, Accessibility calls, settings 
 Tests/               the test suite and its small harness
 Resources/           Info.plist template
 assets/icon.png      the app icon, turned into an .icns at build time
-scripts/             icon builder, linter, Divvy importer
+scripts/             icon builder, linter, signing identity, Divvy importer
 web/                 the landing page deployed to Vercel
 ```
 
@@ -158,7 +166,8 @@ make lint              # compiler warnings, long lines, trailing whitespace, lef
 make app               # build build/Snap It.app without installing it
 make run               # build it and launch it from ./build
 make install           # build it, install to /Applications, launch it
-make reset-permission  # clear the Accessibility grant after a rebuild
+make signing-identity  # create a self signed identity so the grant survives rebuilds
+make reset-permission  # clear the Accessibility grant after an ad hoc rebuild
 make import-divvy      # convert Divvy's shortcuts into a Snap It config
 make uninstall         # remove /Applications/Snap It.app
 make dev-web           # serve the landing page on http://localhost:4477

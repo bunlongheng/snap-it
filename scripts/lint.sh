@@ -1,46 +1,52 @@
 #!/usr/bin/env bash
-# Snap It has no third party linter. The gates are the compiler's own warnings
-# plus a check for the house style rules that a compiler cannot see.
+# Snap It has no third party linter. The gates are the compiler's own
+# diagnostics plus the house rules a compiler cannot see.
 set -uo pipefail
 
 status=0
-sources=$(find Sources Tests -name '*.swift')
+kit=$(find Sources/SnapItKit -name '*.swift')
+app=$(find Sources/SnapIt -name '*.swift')
+tests=$(find Tests -name '*.swift')
+all="$kit $app $tests"
 
-echo "==> compiler warnings"
-warnings=$(swiftc -swift-version 5 -typecheck -framework Cocoa -framework Carbon \
-  -framework ServiceManagement $sources 2>&1 | grep -E 'warning:' || true)
-if [ -n "$warnings" ]; then
-  echo "$warnings"
-  status=1
-else
-  echo "    none"
-fi
+# The app and the tests each have their own main.swift, so they are two
+# separate compilations and cannot be type checked in one pass.
+typecheck() {
+  local label="$1"
+  shift
+  local output
+  output=$(swiftc -swift-version 5 -typecheck -framework Cocoa -framework Carbon \
+    -framework ServiceManagement "$@" 2>&1 | grep -E 'error:|warning:' || true)
+  if [ -n "$output" ]; then
+    echo "  $label:"
+    echo "$output"
+    status=1
+  else
+    echo "  $label: clean"
+  fi
+}
+
+report() {
+  local label="$1" output="$2"
+  if [ -n "$output" ]; then
+    echo "$output"
+    status=1
+  else
+    echo "    none"
+  fi
+}
+
+echo "==> compiler errors and warnings"
+typecheck "app" $kit $app
+typecheck "tests" $kit $tests
 
 echo "==> long lines (over 120 characters)"
-long=$(awk 'length > 120 {print FILENAME":"FNR": "length" chars"}' $sources || true)
-if [ -n "$long" ]; then
-  echo "$long"
-  status=1
-else
-  echo "    none"
-fi
+report "long lines" "$(awk 'length > 120 {print FILENAME":"FNR": "length" chars"}' $all || true)"
 
 echo "==> trailing whitespace"
-trailing=$(grep -rn ' $' $sources || true)
-if [ -n "$trailing" ]; then
-  echo "$trailing"
-  status=1
-else
-  echo "    none"
-fi
+report "trailing whitespace" "$(grep -rn ' $' $all || true)"
 
 echo "==> leftover markers"
-markers=$(grep -rnE 'TODO|FIXME|print\(' $sources || true)
-if [ -n "$markers" ]; then
-  echo "$markers"
-  status=1
-else
-  echo "    none"
-fi
+report "markers" "$(grep -rnE 'TODO|FIXME|print\(' $all || true)"
 
 exit $status

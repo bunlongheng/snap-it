@@ -13,27 +13,54 @@ final class PreferencesModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var isTrusted: Bool
 
+    @Published var launchAtLogin: Bool
+
     private weak var controller: AppController?
     private var trustTimer: Timer?
+    private var pendingCommit: DispatchWorkItem?
 
     init(controller: AppController) {
         self.controller = controller
         config = controller.currentConfig
         selection = controller.currentConfig.layouts.first?.id
         isTrusted = AccessibilityPermission.isTrusted
-
-        // The permission is granted in System Settings, which sends no
-        // notification, so the status row polls while the window is open.
-        trustTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            let trusted = AccessibilityPermission.isTrusted
-            if trusted != self.isTrusted { self.isTrusted = trusted }
-        }
+        launchAtLogin = LaunchAtLogin.isEnabled
     }
 
     deinit {
-        trustTimer?.invalidate()
+        stopWatching()
     }
+
+    /// The permission is granted in System Settings, which sends no
+    /// notification, so the status row polls. Only while the window is open:
+    /// a menu bar app that wakes every two seconds forever is not idle.
+    func startWatching() {
+        guard trustTimer == nil else { return }
+        refreshSystemState()
+        trustTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+            self?.refreshSystemState()
+        }
+    }
+
+    func stopWatching() {
+        trustTimer?.invalidate()
+        trustTimer = nil
+        pendingCommit?.perform()
+        pendingCommit = nil
+    }
+
+    private func refreshSystemState() {
+        let trusted = AccessibilityPermission.isTrusted
+        if trusted != isTrusted { isTrusted = trusted }
+        let login = LaunchAtLogin.isEnabled
+        if login != launchAtLogin { launchAtLogin = login }
+    }
+
+    func setLaunchAtLogin(_ enabled: Bool) {
+        launchAtLogin = LaunchAtLogin.set(enabled)
+    }
+
+    var shortcutConflicts: [String] { controller?.shortcutConflicts ?? [] }
 
     var selectedLayout: Layout? {
         config.layouts.first { $0.id == selection }
@@ -43,11 +70,23 @@ final class PreferencesModel: ObservableObject {
         guard let index = config.layouts.firstIndex(where: { $0.id == id }) else { return nil }
         return Binding(
             get: { self.config.layouts[index] },
-            set: { self.config.layouts[index] = $0; self.commit() }
+            set: { self.config.layouts[index] = $0; self.commitSoon() }
         )
     }
 
+    /// Text fields report every keystroke. Saving the file and re-registering
+    /// every global shortcut that often would briefly leave the shortcuts
+    /// unregistered, so edits are allowed to settle first.
+    func commitSoon() {
+        pendingCommit?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.commit() }
+        pendingCommit = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: work)
+    }
+
     func commit() {
+        pendingCommit?.cancel()
+        pendingCommit = nil
         do {
             try controller?.update(config)
             errorMessage = nil
