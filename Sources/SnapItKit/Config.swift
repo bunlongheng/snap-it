@@ -53,26 +53,28 @@ struct Config: Codable, Hashable, Sendable {
 }
 
 extension Config {
-    /// Shipped defaults, modelled on Divvy and Spectacle muscle memory.
+    /// Shipped defaults: a 6 by 6 grid with halves, thirds and sixths, on the
+    /// key combinations Divvy users already have in their fingers.
     static let standard = Config(
         gap: 0,
         grid: .standard,
         layouts: [
             .make("left-half", "Left Half", 0, 0, 0.5, 1, "cmd+alt+left"),
             .make("right-half", "Right Half", 0.5, 0, 0.5, 1, "cmd+alt+right"),
-            .make("top-half", "Top Half", 0, 0, 1, 0.5, "cmd+alt+up"),
-            .make("bottom-half", "Bottom Half", 0, 0.5, 1, 0.5, "cmd+alt+down"),
-            .make("maximize", "Maximize", 0, 0, 1, 1, "cmd+alt+return"),
-            .make("center", "Center", 0.125, 0.1, 0.75, 0.8, "cmd+alt+c"),
+            .make("maximize", "Maximize", 0, 0, 1, 1, "cmd+alt+up"),
+            .make("top-half", "Top Half", 0, 0, 1, 0.5, "cmd+ctrl+alt+up"),
+            .make("bottom-half", "Bottom Half", 0, 0.5, 1, 0.5, "cmd+ctrl+alt+down"),
             .make("left-third", "Left Third", 0, 0, 1.0 / 3, 1, "cmd+alt+1"),
-            .make("center-third", "Center Third", 1.0 / 3, 0, 1.0 / 3, 1, "cmd+alt+2"),
-            .make("right-third", "Right Third", 2.0 / 3, 0, 1.0 / 3, 1, "cmd+alt+3"),
-            .make("left-two-thirds", "Left Two Thirds", 0, 0, 2.0 / 3, 1, "cmd+alt+4"),
-            .make("right-two-thirds", "Right Two Thirds", 1.0 / 3, 0, 2.0 / 3, 1, "cmd+alt+5"),
-            .make("top-left-quarter", "Top Left Quarter", 0, 0, 0.5, 0.5, "cmd+alt+u"),
-            .make("top-right-quarter", "Top Right Quarter", 0.5, 0, 0.5, 0.5, "cmd+alt+i"),
-            .make("bottom-left-quarter", "Bottom Left Quarter", 0, 0.5, 0.5, 0.5, "cmd+alt+j"),
-            .make("bottom-right-quarter", "Bottom Right Quarter", 0.5, 0.5, 0.5, 0.5, "cmd+alt+k"),
+            .make("center-third", "Center Third", 1.0 / 3, 0, 1.0 / 3, 1, "cmd+alt+3"),
+            .make("right-third", "Right Third", 2.0 / 3, 0, 1.0 / 3, 1, "cmd+alt+5"),
+            .make("right-two-thirds", "Right Two Thirds", 1.0 / 3, 0, 2.0 / 3, 1, "cmd+alt+2"),
+            .make("center-two-thirds", "Center Two Thirds", 1.0 / 6, 0, 2.0 / 3, 1, "cmd+ctrl+alt+c"),
+            .make("top-left-sixth", "Top Left Sixth", 0, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+1"),
+            .make("top-middle-sixth", "Top Middle Sixth", 1.0 / 3, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+2"),
+            .make("top-right-sixth", "Top Right Sixth", 2.0 / 3, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+3"),
+            .make("bottom-left-sixth", "Bottom Left Sixth", 0, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+4"),
+            .make("bottom-middle-sixth", "Bottom Middle Sixth", 1.0 / 3, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+5"),
+            .make("bottom-right-sixth", "Bottom Right Sixth", 2.0 / 3, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+6"),
         ]
     )
 }

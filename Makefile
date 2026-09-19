@@ -21,7 +21,7 @@ SIGN_IDENTITY ?= -
 ARCHS      := arm64 x86_64
 FLAGS      := -O -swift-version 5 -framework Cocoa -framework Carbon -framework ServiceManagement
 
-.PHONY: all build app test lint run install uninstall reset-permission signing-identity import-divvy clean dev-web
+.PHONY: all build app test lint run install uninstall reset-permission signing-identity sync-defaults import-divvy clean dev-web
 
 all: app
 
@@ -87,6 +87,10 @@ uninstall:
 run: app
 	@osascript -e 'quit app "Snap It"' 2>/dev/null || true
 	@open "$(APP_BUNDLE)"
+
+## Regenerate the README table and the landing page from Config.standard.
+sync-defaults:
+	@/usr/bin/python3 scripts/sync-defaults.py
 
 ## Import Divvy's saved shortcuts into the Snap It config.
 import-divvy:

@@ -84,11 +84,22 @@ run.equal(clamped.width, screen.width - 2 * Placement.maximumGap, "an absurd gap
 run.suite("Config")
 
 run.expect((try? Config.standard.validate()) != nil, "the shipped defaults are valid")
-run.equal(Config.standard.layouts.count, 15, "ships 15 layouts")
+run.equal(Config.standard.layouts.count, 16, "ships 16 layouts")
 run.equal(
     Config.standard.layouts.first { $0.id == "left-half" }?.shortcut?.stringValue,
     "cmd+alt+left",
     "left half is on the documented shortcut"
+)
+
+run.equal(
+    Config.standard.layouts.first { $0.id == "maximize" }?.shortcut?.stringValue,
+    "cmd+alt+up",
+    "maximize keeps the Divvy binding"
+)
+run.equal(
+    Set(Config.standard.layouts.compactMap { $0.shortcut?.stringValue }).count,
+    16,
+    "every default layout has its own shortcut"
 )
 
 run.throwsError("rejects two layouts sharing a shortcut") {
@@ -136,7 +147,7 @@ let directory = URL(fileURLWithPath: NSTemporaryDirectory())
     .appendingPathComponent("snap-it-tests-\(UUID().uuidString)")
 let store = ConfigStore(url: directory.appendingPathComponent("config.json"))
 
-run.equal(try store.load().layouts.count, 15, "falls back to the defaults when nothing is saved")
+run.equal(try store.load().layouts.count, 16, "falls back to the defaults when nothing is saved")
 
 let created = try store.loadOrCreate()
 run.expect(FileManager.default.fileExists(atPath: store.url.path), "a first run writes the file")

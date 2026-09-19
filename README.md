@@ -21,7 +21,7 @@ one readable config file. Native Swift, no third party dependencies, 1.2 MB.
 ## What it does
 
 `cmd` `alt` `←` puts the window on the left half of the screen it is already on.
-`cmd` `alt` `→` puts it on the right. There are 15 layouts to start with, and any
+`cmd` `alt` `→` puts it on the right. There are 16 layouts to start with, and any
 of them can be renamed, redrawn on a grid, or bound to a different key.
 
 That is the whole app. It has no window of its own, no account, no network access,
@@ -64,16 +64,29 @@ Then allow it to move windows:
 
 ## Default shortcuts
 
-| Layout | Shortcut | Layout | Shortcut |
-|---|---|---|---|
-| Left Half | `⌥⌘←` | Left Third | `⌥⌘1` |
-| Right Half | `⌥⌘→` | Center Third | `⌥⌘2` |
-| Top Half | `⌥⌘↑` | Right Third | `⌥⌘3` |
-| Bottom Half | `⌥⌘↓` | Left Two Thirds | `⌥⌘4` |
-| Maximize | `⌥⌘↩` | Right Two Thirds | `⌥⌘5` |
-| Center | `⌥⌘C` | Top Left Quarter | `⌥⌘U` |
-| Top Right Quarter | `⌥⌘I` | Bottom Left Quarter | `⌥⌘J` |
-| Bottom Right Quarter | `⌥⌘K` | | |
+<!-- defaults:start -->
+| Layout | Shortcut | Region |
+|---|---|---|
+| Left Half | `⌥⌘←` | 50% x 100% |
+| Right Half | `⌥⌘→` | 50% x 100% |
+| Maximize | `⌥⌘↑` | 100% x 100% |
+| Top Half | `⌃⌥⌘↑` | 100% x 50% |
+| Bottom Half | `⌃⌥⌘↓` | 100% x 50% |
+| Left Third | `⌥⌘1` | 33% x 100% |
+| Center Third | `⌥⌘3` | 33% x 100% |
+| Right Third | `⌥⌘5` | 33% x 100% |
+| Right Two Thirds | `⌥⌘2` | 67% x 100% |
+| Center Two Thirds | `⌃⌥⌘C` | 67% x 100% |
+| Top Left Sixth | `⌃⌥⌘1` | 33% x 50% |
+| Top Middle Sixth | `⌃⌥⌘2` | 33% x 50% |
+| Top Right Sixth | `⌃⌥⌘3` | 33% x 50% |
+| Bottom Left Sixth | `⌃⌥⌘4` | 33% x 50% |
+| Bottom Middle Sixth | `⌃⌥⌘5` | 33% x 50% |
+| Bottom Right Sixth | `⌃⌥⌘6` | 33% x 50% |
+<!-- defaults:end -->
+
+Generated from `Config.standard` by `make sync-defaults` - edit the defaults in
+`Sources/SnapItKit/Config.swift`, never this table.
 
 If another app already owns one of these, Snap It says so in its menu rather than
 failing silently.
@@ -126,6 +139,26 @@ so it cannot swallow ordinary typing.
 
 A file that does not parse, names an unknown key, or gives the same shortcut to two
 layouts is reported rather than guessed at, and is never overwritten.
+
+## Setting it up on another Mac
+
+Cloning and building is the recommended path, not a fallback. A build made on the
+machine it runs on is never quarantined by Gatekeeper, whereas a downloaded app that
+is not notarized has to be talked past it.
+
+```bash
+git clone https://github.com/bunlongheng/snap-it
+cd snap-it
+make signing-identity                              # once per machine
+make install SIGN_IDENTITY="Snap It Local Signing"
+```
+
+Then two things are per-machine and cannot be scripted:
+
+| | |
+|---|---|
+| **Accessibility** | Approve Snap It once in System Settings. macOS deliberately refuses to let this be automated, so it is one manual toggle on every Mac, forever. |
+| **Your layouts** | The defaults are already the shortcut set below, so most people need nothing. To carry over a customised set, copy `~/Library/Application Support/SnapIt/config.json` across and restart the app. |
 
 ## Coming from Divvy
 
