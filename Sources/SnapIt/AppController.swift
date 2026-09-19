@@ -2,11 +2,12 @@ import AppKit
 
 /// Owns the running state: the config, the registered shortcuts, the menu bar
 /// item and the preferences window.
-final class AppController: NSObject, NSApplicationDelegate {
+final class AppController: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let store: ConfigStore
     private var config: Config
     private var hotKeys: HotKeyCenter?
     private var statusItem: NSStatusItem?
+    private let menu = NSMenu()
     private var preferences: PreferencesWindowController?
 
     /// macOS asks for Accessibility access once. Snap It matches that: one
@@ -121,13 +122,16 @@ final class AppController: NSObject, NSApplicationDelegate {
             accessibilityDescription: "Snap It"
         )
         item.button?.toolTip = "Snap It"
+        menu.delegate = self
+        menu.autoenablesItems = false
+        item.menu = menu
         statusItem = item
         rebuildMenu()
     }
 
+    /// Rebuilds in place so it is safe to call while the menu is opening.
     private func rebuildMenu() {
-        let menu = NSMenu()
-        menu.autoenablesItems = false
+        menu.removeAllItems()
 
         if !AccessibilityPermission.isTrusted {
             let warning = NSMenuItem(
@@ -167,8 +171,13 @@ final class AppController: NSObject, NSApplicationDelegate {
         menu.addItem(item(title: "Reveal Config File", action: #selector(revealConfig), key: ""))
         menu.addItem(.separator())
         menu.addItem(item(title: "Quit Snap It", action: #selector(quit), key: "q"))
+    }
 
-        statusItem?.menu = menu
+    /// Rebuilt every time it opens, so granting access or a shortcut clash
+    /// shows up without restarting the app.
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        guard menu === self.menu else { return }
+        rebuildMenu()
     }
 
     private func item(title: String, action: Selector, key: String) -> NSMenuItem {

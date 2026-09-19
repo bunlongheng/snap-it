@@ -4,8 +4,12 @@ import ApplicationServices
 /// Snap It moves other applications' windows, which macOS gates behind the
 /// Accessibility permission. Nothing else here is privileged.
 enum AccessibilityPermission {
+    /// `AXIsProcessTrusted()` caches its answer for the life of the process,
+    /// so an app granted access while running keeps reporting `false`. Asking
+    /// with an explicit "do not prompt" option reads the live state instead.
     static var isTrusted: Bool {
-        AXIsProcessTrusted()
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false] as CFDictionary
+        return AXIsProcessTrustedWithOptions(options)
     }
 
     /// Asks macOS to show the system prompt. Returns the state as of right now,
