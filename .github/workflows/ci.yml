@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint
+        run: make lint
+
+      - name: Test
+        run: make test
+
+      - name: Build the app bundle
+        run: make app
+
+      - name: Check the bundle
+        run: |
+          test -f "build/Snap It.app/Contents/MacOS/SnapIt"
+          test -f "build/Snap It.app/Contents/Resources/AppIcon.icns"
+          lipo -info "build/Snap It.app/Contents/MacOS/SnapIt"

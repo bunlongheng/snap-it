@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+build/
+dist/
+*.xcodeproj
+.swiftpm/
+Package.resolved
+.vercel/
+node_modules/
+*.icns

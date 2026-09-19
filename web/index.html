@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snap It - a tiny window manager for macOS</title>
+<meta name="description" content="Snap It moves the focused macOS window into a position you saved, on a global shortcut. Native Swift, no dependencies, 1.2 MB, MIT licensed.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="icon.png">
+<meta property="og:title" content="Snap It - a tiny window manager for macOS">
+<meta property="og:description" content="Saved window positions on global shortcuts. Native Swift, zero dependencies, MIT.">
+<meta property="og:image" content="icon.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <img src="icon.png" alt="" width="28" height="28">
+    <span class="name">SNAP IT</span>
+    <nav>
+      <a href="#keys">Shortcuts</a>
+      <a href="#install">Install</a>
+      <a href="#config">Config</a>
+      <a href="https://github.com/bunlongheng/snap-it">Source</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">macOS 13+ &middot; native swift &middot; MIT</p>
+      <h1>Windows<span class="split">snap shut</span></h1>
+      <p class="lede">
+        Press a key, the focused window lands exactly where you saved it.
+        <strong>1.2 MB</strong>, no dependencies, no background daemon, no account.
+        It sits in the menu bar and otherwise does nothing at all.
+      </p>
+      <div class="cta">
+        <button class="copy" id="copy" type="button" aria-label="Copy the install command">
+          <span class="k">$</span>
+          <span id="cmd">git clone https://github.com/bunlongheng/snap-it &amp;&amp; cd snap-it &amp;&amp; make install</span>
+          <span class="tick" aria-hidden="true">copied</span>
+        </button>
+        <a class="ghost" href="https://github.com/bunlongheng/snap-it">Read the source</a>
+      </div>
+    </div>
+
+    <figure class="demo">
+      <div class="screen" aria-hidden="true">
+        <div class="cells" id="cells"></div>
+        <div class="tile" id="tile">window</div>
+      </div>
+      <figcaption>
+        <span>6 &times; 6 grid, the one Divvy uses</span>
+        <span><b id="demo-name">Left Half</b> &nbsp;<span id="demo-key">&#8997;&#8984;&#8592;</span></span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="stats">
+    <div><div class="n">1.2 MB</div><div class="l">universal app bundle</div></div>
+    <div><div class="n">0</div><div class="l">third party dependencies</div></div>
+    <div><div class="n">15</div><div class="l">layouts out of the box</div></div>
+    <div><div class="n">MIT</div><div class="l">do what you like with it</div></div>
+  </div>
+
+  <section id="keys">
+    <div class="wrap">
+      <h2>The default keys</h2>
+      <p class="sub">
+        Every one of them is a line in a JSON file, so rebind whatever you like.
+        Hover a row to see where the window lands.
+      </p>
+      <table class="keys">
+        <thead>
+          <tr><th>Layout</th><th>Shortcut</th><th>Region</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>Install</h2>
+      <p class="sub">
+        No Xcode needed. The Swift toolchain in Apple's Command Line Tools is enough,
+        and the build produces a universal binary for Apple silicon and Intel.
+      </p>
+      <div class="two">
+        <pre><code><span class="c-com"># 1. build and install to /Applications</span>
+git clone https://github.com/bunlongheng/snap-it
+cd snap-it
+make install
+
+<span class="c-com"># 2. allow it to move windows</span>
+<span class="c-com">#    System Settings &gt; Privacy &amp; Security</span>
+<span class="c-com">#    &gt; Accessibility &gt; Snap It</span>
+
+<span class="c-com"># 3. coming from Divvy? bring your layouts</span>
+make import-divvy</code></pre>
+        <div class="cards" style="grid-template-columns: 1fr">
+          <div class="card">
+            <h3>Accessibility, and nothing else</h3>
+            <p>Moving another app's window is the one privileged thing Snap It does, so it is the one permission it asks for. No screen recording, no input monitoring, no network access.</p>
+          </div>
+          <div class="card">
+            <h3>No keylogger in the loop</h3>
+            <p>Shortcuts are registered with the system hot key API, so Snap It is handed the combinations you chose and never sees another keystroke.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="config">
+    <div class="wrap">
+      <h2>One file you can read</h2>
+      <p class="sub">
+        Settings live in <code>~/Library/Application Support/SnapIt/config.json</code>.
+        Edit it by hand or use the grid picker in the settings window. Positions are
+        fractions, so a layout means the same thing on a laptop and on a 6K display.
+      </p>
+      <pre><code>{
+  <span class="c-key">"gap"</span>: <span class="c-num">0</span>,
+  <span class="c-key">"grid"</span>: { <span class="c-key">"columns"</span>: <span class="c-num">6</span>, <span class="c-key">"rows"</span>: <span class="c-num">6</span> },
+  <span class="c-key">"layouts"</span>: [
+    {
+      <span class="c-key">"id"</span>: <span class="c-str">"left-half"</span>,
+      <span class="c-key">"name"</span>: <span class="c-str">"Left Half"</span>,
+      <span class="c-key">"frame"</span>: { <span class="c-key">"x"</span>: <span class="c-num">0</span>, <span class="c-key">"y"</span>: <span class="c-num">0</span>, <span class="c-key">"width"</span>: <span class="c-num">0.5</span>, <span class="c-key">"height"</span>: <span class="c-num">1</span> },
+      <span class="c-key">"shortcut"</span>: <span class="c-str">"cmd+alt+left"</span>
+    }
+  ]
+}</code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Why it is this small</h2>
+      <p class="sub">Three decisions did most of the work.</p>
+      <div class="cards">
+        <div class="card">
+          <h3>Fractions, not pixels</h3>
+          <p>A layout is four numbers between 0 and 1. Every display, every resolution, every external monitor gets the same result with no per screen setup.</p>
+        </div>
+        <div class="card">
+          <h3>The system's own hot keys</h3>
+          <p>No event tap, no polling loop, no helper process. macOS wakes the app only when a registered combination is pressed.</p>
+        </div>
+        <div class="card">
+          <h3>Nothing to configure twice</h3>
+          <p>The menu, the settings window and the JSON file are the same state. Change any one and the other two are already up to date.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Snap It &middot; MIT licensed &middot; built by Bunlong Heng</span>
+    <span>
+      <a href="https://github.com/bunlongheng/snap-it">GitHub</a> &nbsp;
+      <a href="https://bunlongheng.com">bunlongheng.com</a>
+    </span>
+  </div>
+</footer>
+
+<script src="demo.js" defer></script>
+</body>
+</html>
