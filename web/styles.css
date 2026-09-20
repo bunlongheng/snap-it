@@ -29,7 +29,7 @@ body {
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 15px;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -48,7 +48,7 @@ body::before {
   z-index: 0;
 }
 
-main, header, footer { position: relative; z-index: 1; }
+main, footer { position: relative; z-index: 1; }
 
 a { color: inherit; }
 
@@ -77,11 +77,20 @@ h1, h2, h3, .display {
 /* ---------- header ---------- */
 
 header {
-  border-bottom: var(--rule);
-  backdrop-filter: blur(8px);
   position: sticky;
   top: 0;
-  background: #0b0d12cc;
+  z-index: 50;
+  border-bottom: var(--rule);
+  background: var(--ground);
+}
+
+/* Translucent only where the blur is real, so text can never show through. */
+@supports ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
+  header {
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
 }
 
 .bar {
@@ -279,7 +288,10 @@ header {
 
 /* ---------- sections ---------- */
 
-section { padding-block: clamp(46px, 8vw, 86px); }
+section {
+  padding-block: clamp(46px, 8vw, 86px);
+  scroll-margin-top: 76px;
+}
 
 section h2 {
   font-size: clamp(26px, 4vw, 38px);
