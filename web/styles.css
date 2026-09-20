@@ -8,9 +8,18 @@
   --ground: #0b0d12;
   --panel: #12151d;
   --line: #1f2430;
-  --blue: #2a8fff;
-  --violet: #7b3ff2;
-  --ok: #3ddc97;
+  /* One hue per step, the spectrum the Sequences app uses. */
+  --red: #ef4444;
+  --orange: #f97316;
+  --amber: #eab308;
+  --green: #22c55e;
+  --teal: #14b8a6;
+  --cyan: #06b6d4;
+  --blue: #3b82f6;
+  --violet: #8b5cf6;
+
+  --accent: var(--blue);
+  --ok: var(--green);
   --rule: 1px solid var(--line);
   --pad: clamp(20px, 5vw, 64px);
 }
@@ -22,8 +31,9 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background:
-    radial-gradient(900px 600px at 78% -10%, #1a2340 0%, transparent 60%),
-    radial-gradient(700px 500px at 0% 100%, #1c1533 0%, transparent 55%),
+    radial-gradient(760px 520px at 82% -8%, #16305e 0%, transparent 62%),
+    radial-gradient(620px 460px at 4% 18%, #0d3b45 0%, transparent 58%),
+    radial-gradient(700px 500px at 0% 100%, #2a1550 0%, transparent 55%),
     var(--ground);
   color: var(--ink);
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -75,6 +85,19 @@ h1, h2, h3, .display {
 }
 
 /* ---------- header ---------- */
+
+/* The full spectrum as a hairline, so the palette reads before you scroll. */
+header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    var(--red), var(--orange), var(--amber), var(--green),
+    var(--teal), var(--cyan), var(--blue), var(--violet));
+}
 
 header {
   position: sticky;
@@ -143,7 +166,7 @@ header {
 .hero h1 .split {
   display: block;
   white-space: nowrap;
-  background: linear-gradient(96deg, var(--blue), var(--violet) 70%);
+  background: linear-gradient(96deg, var(--cyan), var(--blue) 42%, var(--violet) 78%, var(--red));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -192,7 +215,7 @@ header {
   border-radius: 8px;
   border: 1px solid transparent;
   background: linear-gradient(var(--panel), var(--panel)) padding-box,
-    linear-gradient(96deg, var(--blue), var(--violet)) border-box;
+    linear-gradient(96deg, var(--cyan), var(--violet)) border-box;
   border: 1px solid transparent;
   transition: filter 0.15s;
 }
@@ -235,9 +258,11 @@ header {
 .tile {
   position: absolute;
   border-radius: 6px;
-  background: linear-gradient(140deg, #2a8fffdd, #7b3ff2dd);
-  box-shadow: 0 10px 30px -12px #2a8fff80;
-  transition: all 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(140deg,
+    color-mix(in srgb, var(--tile, var(--blue)) 92%, white),
+    var(--tile, var(--blue)));
+  box-shadow: 0 10px 34px -12px var(--tile, var(--blue));
+  transition: all 420ms cubic-bezier(0.22, 1, 0.36, 1), background 300ms linear;
   display: grid;
   place-items: center;
   font-size: 11px;
@@ -275,6 +300,11 @@ header {
 
 .stats > div:first-child { border-left: 0; }
 
+.stats > div:nth-child(1) .n { color: var(--red); }
+.stats > div:nth-child(2) .n { color: var(--amber); }
+.stats > div:nth-child(3) .n { color: var(--green); }
+.stats > div:nth-child(4) .n { color: var(--cyan); }
+
 .stats .n {
   font-family: Archivo, sans-serif;
   font-variation-settings: "wdth" 125;
@@ -288,6 +318,11 @@ header {
 
 /* ---------- sections ---------- */
 
+#keys { --accent: var(--amber); }
+#install { --accent: var(--green); }
+#config { --accent: var(--teal); }
+#why { --accent: var(--cyan); }
+
 section {
   padding-block: clamp(46px, 8vw, 86px);
   scroll-margin-top: 76px;
@@ -297,6 +332,17 @@ section h2 {
   font-size: clamp(26px, 4vw, 38px);
   font-variation-settings: "wdth" 118;
   margin-bottom: 8px;
+}
+
+section h2::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 12px;
+  border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 18px var(--accent);
 }
 
 section > .wrap > p.sub {
@@ -322,9 +368,45 @@ section > .wrap > p.sub {
 
 .keys td { padding: 11px 14px; border-bottom: var(--rule); }
 
+.keys tbody { counter-reset: step; }
+
 .keys tbody tr { cursor: pointer; transition: background 0.14s; }
+
+.keys tbody tr:nth-child(8n + 1) { --row: var(--red); }
+.keys tbody tr:nth-child(8n + 2) { --row: var(--orange); }
+.keys tbody tr:nth-child(8n + 3) { --row: var(--amber); }
+.keys tbody tr:nth-child(8n + 4) { --row: var(--green); }
+.keys tbody tr:nth-child(8n + 5) { --row: var(--teal); }
+.keys tbody tr:nth-child(8n + 6) { --row: var(--cyan); }
+.keys tbody tr:nth-child(8n + 7) { --row: var(--blue); }
+.keys tbody tr:nth-child(8n + 8) { --row: var(--violet); }
+
+.keys tbody td:first-child::before {
+  content: counter(step);
+  counter-increment: step;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--row);
+  color: #08090d;
+  font-size: 11px;
+  font-weight: 500;
+  vertical-align: -4px;
+}
+
+.keys tbody tr td:nth-child(2) kbd {
+  border-color: color-mix(in srgb, var(--row) 55%, transparent);
+  background: color-mix(in srgb, var(--row) 12%, var(--panel));
+  color: var(--ink);
+}
 .keys tbody tr:hover, .keys tbody tr:focus-visible { background: #ffffff08; outline: none; }
-.keys tbody tr[aria-current="true"] { background: #2a8fff1a; }
+.keys tbody tr[aria-current="true"] {
+  background: color-mix(in srgb, var(--row) 14%, transparent);
+  box-shadow: inset 3px 0 0 var(--row);
+}
 
 kbd {
   font: inherit;
@@ -341,10 +423,33 @@ kbd {
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
 .card {
+  position: relative;
+  overflow: hidden;
   border: var(--rule);
   border-radius: 12px;
   padding: 22px;
   background: linear-gradient(#12161f, #0d1016);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--card-accent, var(--accent));
+}
+
+.cards .card:nth-child(1) { --card-accent: var(--teal); }
+.cards .card:nth-child(2) { --card-accent: var(--cyan); }
+.cards .card:nth-child(3) { --card-accent: var(--violet); }
+
+.card h3 span.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--card-accent, var(--accent));
 }
 
 .card h3 { font-size: 16px; font-variation-settings: "wdth" 112; margin-bottom: 8px; }

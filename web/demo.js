@@ -24,6 +24,9 @@
   ];
 /* defaults:end */
 
+  var HUES = ["#ef4444", "#f97316", "#eab308", "#22c55e",
+              "#14b8a6", "#06b6d4", "#3b82f6", "#8b5cf6"];
+
   var tile = document.getElementById("tile");
   var rows = document.getElementById("rows");
   var cells = document.getElementById("cells");
@@ -44,8 +47,10 @@
     tile.style.top = "calc(8px + " + layout.y * 100 + "% - " + layout.y * 16 + "px)";
     tile.style.width = "calc(" + layout.w * 100 + "% - " + layout.w * 16 + "px)";
     tile.style.height = "calc(" + layout.h * 100 + "% - " + layout.h * 16 + "px)";
+    tile.style.setProperty("--tile", HUES[n % HUES.length]);
     name.textContent = layout.name;
     keyLabel.textContent = layout.key;
+    keyLabel.style.color = HUES[n % HUES.length];
 
     var active = rows.querySelectorAll("tr");
     for (var i = 0; i < active.length; i++) {
