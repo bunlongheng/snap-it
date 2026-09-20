@@ -6,6 +6,7 @@ import SwiftUI
 struct GridPicker: View {
     @Binding var frame: FrameSpec
     let grid: GridSize
+    let accent: Color
 
     private var columns: Int { grid.columns }
     private var rows: Int { grid.rows }
@@ -34,7 +35,7 @@ struct GridPicker: View {
         .accessibilityElement()
         .accessibilityLabel("Window region")
         .accessibilityValue(regionDescription)
-        .accessibilityHint("Drag across the grid to choose a region, or use the percentage fields below.")
+        .accessibilityHint("Drag across the grid to choose the region this layout puts the window in.")
     }
 
     private func cellSize(in size: CGSize) -> CGSize {
@@ -48,7 +49,8 @@ struct GridPicker: View {
         ForEach(0 ..< rows, id: \.self) { row in
             ForEach(0 ..< columns, id: \.self) { column in
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(Color.primary.opacity(0.06))
+                    .fill(Color.white.opacity(0.055))
+                    .overlay(RoundedRectangle(cornerRadius: 4).fill(accent.opacity(0.10)))
                     .frame(width: size.width, height: size.height)
                     .offset(
                         x: (size.width + spacing) * CGFloat(column),
@@ -61,7 +63,14 @@ struct GridPicker: View {
     private func selection(size: CGSize) -> some View {
         let rect = pixelRect(size: size)
         return RoundedRectangle(cornerRadius: 5)
-            .fill(Color.accentColor.opacity(0.75))
+            .fill(
+                LinearGradient(
+                    colors: [accent.opacity(0.95), accent.opacity(0.62)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .shadow(color: accent.opacity(0.55), radius: 14, y: 4)
             .frame(width: max(rect.width, 0), height: max(rect.height, 0))
             .offset(x: rect.minX, y: rect.minY)
             .animation(.easeOut(duration: 0.08), value: frame)

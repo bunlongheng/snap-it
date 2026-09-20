@@ -98,10 +98,10 @@ Click the menu bar icon and choose **Settings**. Each layout has:
 - a **grid picker**, drag across it the way you would in Divvy
 - a **shortcut recorder**, which releases Snap It's own keys while it listens so
   you can re-record a combination that is already in use
-- **percentage fields**, which edit the same numbers from the keyboard
 
-The footer carries the gap between windows, the grid size, and a launch at login
-toggle.
+The footer carries a launch at login toggle and a button that reveals the config
+file. Gap and grid size live in that file rather than in the window: they are set
+once, if ever.
 
 ## The config file
 

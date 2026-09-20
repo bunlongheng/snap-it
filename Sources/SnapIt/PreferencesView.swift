@@ -13,38 +13,20 @@ struct PreferencesView: View {
             detail
         }
         .frame(minWidth: 680, minHeight: 480)
-        .safeAreaInset(edge: .bottom, spacing: 0) { footer }
-        .onAppear { model.startWatching() }
-        .onDisappear { model.stopWatching() }
-    }
-
-    // MARK: - Sidebar
-
-    private var sidebar: some View {
-        VStack(spacing: 0) {
-            List(model.config.layouts, selection: $model.selection) { layout in
-                HStack {
-                    Text(layout.name)
-                    Spacer(minLength: 8)
-                    Text(layout.shortcut?.displayValue ?? "\u{2014}")
-                        .foregroundStyle(.secondary)
-                }
-                .tag(layout.id)
-            }
-            .listStyle(.sidebar)
-
-            Divider()
-
-            HStack(spacing: 2) {
+        .tint(model.hue(for: model.selection))
+        .toolbar {
+            ToolbarItemGroup {
                 Button(action: model.addLayout) {
                     Image(systemName: "plus")
                 }
+                .help("Add a layout")
                 .accessibilityLabel("Add layout")
 
                 Button(action: { confirmingDelete = true }) {
                     Image(systemName: "minus")
                 }
                 .disabled(model.selection == nil)
+                .help("Remove the selected layout")
                 .accessibilityLabel("Remove layout")
                 .confirmationDialog(
                     "Delete \(model.selectedLayout?.name ?? "this layout")?",
@@ -56,15 +38,42 @@ struct PreferencesView: View {
                     Text("Its shortcut is freed. This cannot be undone.")
                 }
 
-                Spacer()
-
                 Button("Restore Defaults", action: model.restoreDefaults)
-                    .font(.caption)
+                    .help("Replace every layout with the shipped set")
             }
-            .buttonStyle(.borderless)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) { footer }
+        .onAppear { model.startWatching() }
+        .onDisappear { model.stopWatching() }
+    }
+
+    // MARK: - Sidebar
+
+    private var sidebar: some View {
+        List(selection: $model.selection) {
+            ForEach(Array(model.config.layouts.enumerated()), id: \.element.id) { index, layout in
+                let hue = Palette.hue(for: index)
+                HStack(spacing: 9) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(hue)
+                        .frame(width: model.selection == layout.id ? 5 : 10,
+                               height: model.selection == layout.id ? 22 : 10)
+                        .shadow(color: hue.opacity(0.8), radius: 4)
+                    Text(layout.name)
+                    Spacer(minLength: 8)
+                    Text(layout.shortcut?.displayValue ?? "\u{2014}")
+                        .foregroundStyle(hue)
+                }
+                .padding(.vertical, 1)
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(hue.opacity(model.selection == layout.id ? 0.28 : 0.07))
+                        .padding(.horizontal, 6)
+                )
+                .tag(layout.id)
+            }
+        }
+        .listStyle(.sidebar)
     }
 
     // MARK: - Detail
@@ -72,7 +81,7 @@ struct PreferencesView: View {
     @ViewBuilder
     private var detail: some View {
         if let id = model.selection, let layout = model.binding(for: id) {
-            LayoutEditor(layout: layout, model: model)
+            LayoutEditor(layout: layout, model: model, accent: model.hue(for: id))
                 .id(id)
         } else if model.config.layouts.isEmpty {
             placeholder(
@@ -105,7 +114,8 @@ struct PreferencesView: View {
 
     private var footer: some View {
         VStack(spacing: 0) {
-            Divider()
+            LinearGradient(colors: Palette.spectrum, startPoint: .leading, endPoint: .trailing)
+                .frame(height: 2)
 
             if let error = model.errorMessage {
                 Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -143,49 +153,6 @@ struct PreferencesView: View {
             }
 
             HStack(spacing: 16) {
-                HStack(spacing: 8) {
-                    Text("Gap")
-                    Slider(
-                        value: Binding(
-                            get: { model.config.gap },
-                            set: { model.config.gap = $0.rounded(); model.commit() }
-                        ),
-                        in: 0 ... Placement.maximumGap
-                    )
-                    .frame(width: 140)
-                    .accessibilityLabel("Gap between windows in points")
-                    Text("\(Int(model.config.gap)) pt")
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                        .frame(width: 44, alignment: .leading)
-                }
-
-                HStack(spacing: 6) {
-                    Text("Grid")
-                    Stepper(
-                        value: Binding(
-                            get: { model.config.grid.columns },
-                            set: { model.config.grid.columns = $0; model.commit() }
-                        ),
-                        in: GridSize.range
-                    ) {
-                        Text("\(model.config.grid.columns)").monospacedDigit()
-                    }
-                    .accessibilityLabel("Grid columns")
-
-                    Text("by")
-                    Stepper(
-                        value: Binding(
-                            get: { model.config.grid.rows },
-                            set: { model.config.grid.rows = $0; model.commit() }
-                        ),
-                        in: GridSize.range
-                    ) {
-                        Text("\(model.config.grid.rows)").monospacedDigit()
-                    }
-                    .accessibilityLabel("Grid rows")
-                }
-
                 Toggle("Launch at login", isOn: Binding(
                     get: { model.launchAtLogin },
                     set: model.setLaunchAtLogin
@@ -210,60 +177,39 @@ struct PreferencesView: View {
 private struct LayoutEditor: View {
     @Binding var layout: Layout
     @ObservedObject var model: PreferencesModel
+    let accent: Color
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                TextField("Name", text: $layout.name)
-                    .textFieldStyle(.roundedBorder)
-                    .font(.title3)
+                HStack(spacing: 10) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(accent)
+                        .frame(width: 14, height: 14)
+                        .shadow(color: accent.opacity(0.8), radius: 5)
+                    TextField("Name", text: $layout.name)
+                        .textFieldStyle(.roundedBorder)
+                        .font(.title3)
+                }
 
-                GridPicker(frame: $layout.frame, grid: model.config.grid)
+                GridPicker(frame: $layout.frame, grid: model.config.grid, accent: accent)
 
-                LabeledContent("Shortcut") {
-                    ShortcutRecorder(shortcut: $layout.shortcut) { recording in
+                HStack(spacing: 6) {
+                    Text("Shortcut")
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                    ShortcutRecorder(shortcut: $layout.shortcut, accent: accent) { recording in
                         recording ? model.suspendShortcuts() : model.resumeShortcuts()
                     }
                 }
 
-                percentages
-
                 Button("Apply to focused window", action: model.applySelectedToFocusedWindow)
+                    .buttonStyle(.borderedProminent)
+                    .tint(accent)
                     .help("Moves whichever window was focused before the settings window opened.")
             }
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private var percentages: some View {
-        Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 8) {
-            GridRow {
-                percentField("Left", value: $layout.frame.x)
-                percentField("Top", value: $layout.frame.y)
-            }
-            GridRow {
-                percentField("Width", value: $layout.frame.width)
-                percentField("Height", value: $layout.frame.height)
-            }
-        }
-    }
-
-    private func percentField(_ title: String, value: Binding<Double>) -> some View {
-        LabeledContent(title) {
-            HStack(spacing: 4) {
-                TextField(
-                    title,
-                    value: Binding(
-                        get: { (value.wrappedValue * 100).rounded() },
-                        set: { value.wrappedValue = min(max($0, 0), 100) / 100 }
-                    ),
-                    format: .number.precision(.fractionLength(0))
-                )
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 70)
-                Text("%").foregroundStyle(.secondary)
-            }
         }
     }
 }

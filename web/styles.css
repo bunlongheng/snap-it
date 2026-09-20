@@ -289,6 +289,10 @@ header {
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  /* Held to the same measure as the rest of the page: full bleed leaves the
+     four figures marooned on a wide display. */
+  max-width: 1120px;
+  margin-inline: auto;
   border-top: var(--rule);
   border-bottom: var(--rule);
 }

@@ -8,6 +8,7 @@ import SwiftUI
 /// it never reaches the rest of the system.
 struct ShortcutRecorder: View {
     @Binding var shortcut: KeyCombo?
+    let accent: Color
     let onRecordingChanged: (Bool) -> Void
 
     @State private var isRecording = false
@@ -21,8 +22,10 @@ struct ShortcutRecorder: View {
                     Text(label)
                         .frame(minWidth: 120)
                         .monospacedDigit()
+                        .foregroundStyle(shortcut == nil ? Color.secondary : accent)
                 }
                 .buttonStyle(.bordered)
+                .tint(isRecording ? Color.red : accent)
                 .accessibilityLabel("Shortcut")
                 .accessibilityValue(shortcut?.stringValue ?? "none")
                 .accessibilityHint("Activates recording, then press the key combination you want.")

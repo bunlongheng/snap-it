@@ -66,6 +66,14 @@ final class PreferencesModel: ObservableObject {
         config.layouts.first { $0.id == selection }
     }
 
+    /// The colour a layout carries everywhere in the window.
+    func hue(for id: String?) -> Color {
+        guard let id, let index = config.layouts.firstIndex(where: { $0.id == id }) else {
+            return Palette.spectrum[6]
+        }
+        return Palette.hue(for: index)
+    }
+
     func binding(for id: String) -> Binding<Layout>? {
         guard let index = config.layouts.firstIndex(where: { $0.id == id }) else { return nil }
         return Binding(
