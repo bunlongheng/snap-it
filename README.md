@@ -11,30 +11,12 @@ one readable config file. Native Swift, no third party dependencies, 1.2 MB.
 
 [![CI](https://github.com/bunlongheng/snap-it/actions/workflows/ci.yml/badge.svg)](https://github.com/bunlongheng/snap-it/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
-[![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black.svg)](#requirements)
-[![Dependencies](https://img.shields.io/badge/dependencies-0-black.svg)](#why-it-is-this-small)
+[![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black.svg)](#install)
+![Dependencies](https://img.shields.io/badge/dependencies-0-black.svg)
 
 </div>
 
 ---
-
-## What it does
-
-`cmd` `alt` `←` puts the window on the left half of the screen it is already on.
-`cmd` `alt` `→` puts it on the right. There are 16 layouts to start with, and any
-of them can be renamed, redrawn on a grid, or bound to a different key.
-
-That is the whole app. It has no window of its own, no account, no network access,
-and no background helper.
-
-## Requirements
-
-| | |
-|---|---|
-| macOS | 13 Ventura or newer, Apple silicon or Intel |
-| To install | Nothing. The release is a prebuilt universal app |
-| To run | The Accessibility permission, which is what lets any app move another app's windows |
-| To build (optional) | Apple's Command Line Tools (`xcode-select --install`). Xcode is **not** needed |
 
 ## Install
 
@@ -42,81 +24,25 @@ and no background helper.
 curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
 ```
 
-That downloads the prebuilt universal app (2.2 MB), puts it in `/Applications`
-and launches it. Nothing to compile, so no Xcode and no Command Line Tools.
-The 16 layouts below are already configured, so there is nothing to set up after.
+macOS 13 or newer, Apple silicon or Intel. Downloads a 2.2 MB prebuilt app,
+installs it and launches it. Nothing to compile. All 16 layouts below are already
+bound, so there is nothing to configure after.
 
 Then **one** manual step, because macOS refuses to let any installer grant it:
 
 | Your macOS | Allow Snap It to move windows |
 |---|---|
-| 15 Sequoia, 26 Tahoe | Snap It asks on launch. Click **Open System Settings**, then switch **Snap It** on. It is already in the list. |
-| 13 Ventura, 14 Sonoma | Same, but if Snap It is not listed under **System Settings → Privacy & Security → Accessibility**, click **+**, press `⌘⇧G`, enter `/Applications` and pick `Snap It.app`. |
+| 15 Sequoia, 26 Tahoe | It asks on launch. Click **Open System Settings**, switch **Snap It** on. |
+| 13 Ventura, 14 Sonoma | Same, but if it is not listed under **Privacy & Security → Accessibility**, click **+**, press `⌘⇧G`, enter `/Applications`, pick `Snap It.app`. |
 
-That is the whole install. Press `⌥⌘←` on any window to check it worked.
+Press `⌥⌘←` on any window to check it worked.
 
-> **Launched it and nothing happened?** That is expected. Snap It has no window,
-> no Dock icon and no entry in the app switcher. It lives as a small **rectangle
-> split down the middle** at the right hand end of the menu bar, and clicking that
-> icon is how you reach all 16 layouts and Settings. If a window refuses to move,
-> the Accessibility switch above is still off: Snap It beeps instead of moving
-> anything until it is on.
+> **Nothing appeared?** Expected. Snap It has no window and no Dock icon. It is the
+> small **split rectangle** at the right of your menu bar, and that icon is the whole
+> interface. If a window will not move, the Accessibility switch is still off, and
+> Snap It beeps rather than moving anything until it is on.
 
-<details>
-<summary>What the script does, before you pipe it to bash</summary>
-
-Read it first if you would rather: <https://snap-it-bheng.vercel.app/install.sh>.
-It downloads [the latest release](https://github.com/bunlongheng/snap-it/releases/latest),
-checks the file really is a zip, unpacks it with `ditto` so the code signature
-survives, moves it to `/Applications` (or `~/Applications` if that is not
-writable), clears the quarantine flag and opens it. No `sudo`, nothing written
-outside `/Applications`.
-
-The quarantine flag is cleared because the app is signed but not notarized, so
-Gatekeeper would otherwise block it. Clearing the flag is exactly what right
-clicking the app and choosing **Open** does.
-
-</details>
-
-### Or build it from source
-
-Recommended if you want to change it. Needs Apple's Command Line Tools
-(`xcode-select --install`); a clean build takes about 12 seconds.
-
-```bash
-git clone https://github.com/bunlongheng/snap-it
-cd snap-it
-make install
-```
-
-> **If you are going to rebuild:** an ad hoc signature changes with every build, and
-> macOS ties the Accessibility grant to the binary it saw, so a rebuild silently loses
-> the permission while System Settings still shows it enabled. Two ways out:
->
-> ```bash
-> make signing-identity                              # once: a stable self signed identity
-> make install SIGN_IDENTITY="Snap It Local Signing" # the grant now survives rebuilds
-> ```
->
-> Or keep ad hoc signing and run `make reset-permission` after each rebuild, then
-> approve it again.
-
-### Updating
-
-Re-run the install command. For the same reason as above, a new release is a new
-binary, so macOS asks you to switch Snap It on once more after an update.
-
-To publish an update, from a clean tree on `main`:
-
-```bash
-make release VERSION=1.0.1
-```
-
-That bumps `VERSION`, runs the tests, commits, tags and pushes. The tag triggers
-CI, which builds the universal app and publishes the release that `install.sh`
-downloads. Nothing else to do: `install.sh` always points at the latest release.
-
-## Default shortcuts
+## Shortcuts
 
 <!-- defaults:start -->
 | Layout | Shortcut | Region |
@@ -139,13 +65,13 @@ downloads. Nothing else to do: `install.sh` always points at the latest release.
 | Bottom Right Sixth | `⌃⌥⌘6` | 33% x 50% |
 <!-- defaults:end -->
 
-Generated from `Config.standard` by `make sync-defaults` - edit the defaults in
-`Sources/SnapItKit/Config.swift`, never this table.
+Any layout can be renamed, redrawn on a grid, or rebound. If another app already
+owns one of these, Snap It says so in its menu rather than failing silently.
 
-If another app already owns one of these, Snap It says so in its menu rather than
-failing silently.
+---
 
-## Settings
+<details>
+<summary><b>Settings</b></summary>
 
 Click the menu bar icon and choose **Settings**. Each layout has:
 
@@ -157,7 +83,10 @@ The footer carries a launch at login toggle and a button that reveals the config
 file. Gap and grid size live in that file rather than in the window: they are set
 once, if ever.
 
-## The config file
+</details>
+
+<details>
+<summary><b>The config file</b></summary>
 
 Everything lives in `~/Library/Application Support/SnapIt/config.json`. It is
 written pretty printed with sorted keys, so editing it by hand and diffing it both
@@ -194,30 +123,105 @@ so it cannot swallow ordinary typing.
 A file that does not parse, names an unknown key, or gives the same shortcut to two
 layouts is reported rather than guessed at, and is never overwritten.
 
-## Setting it up on another Mac
+To carry a customised set to another Mac, copy that file across and restart the app.
 
-```bash
-curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
-```
+</details>
 
-Then two things are per-machine and cannot be scripted:
+<details>
+<summary><b>What the install script does</b></summary>
 
-| | |
-|---|---|
-| **Accessibility** | Approve Snap It once, as in [Install](#install). macOS deliberately refuses to let this be automated, so it is one manual toggle on every Mac, forever. |
-| **Your layouts** | The defaults are already the shortcut set above, so most people need nothing. To carry over a customised set, copy `~/Library/Application Support/SnapIt/config.json` across and restart the app. |
+Read it first if you would rather: <https://snap-it-bheng.vercel.app/install.sh>.
 
-## Coming from Divvy
+It downloads [the latest release](https://github.com/bunlongheng/snap-it/releases/latest),
+checks the file really is a zip, unpacks it with `ditto` so the code signature
+survives, moves it to `/Applications` (or `~/Applications` if that is not
+writable), clears the quarantine flag and opens it. No `sudo`, nothing written
+outside `/Applications`.
+
+The quarantine flag is cleared because the app is signed but not notarized, so
+Gatekeeper would otherwise block it. Clearing the flag is exactly what right
+clicking the app and choosing **Open** does.
+
+</details>
+
+<details>
+<summary><b>Coming from Divvy</b></summary>
 
 ```bash
 make import-divvy
 ```
 
-This reads Divvy's own preferences, converts every saved shortcut into a Snap It
-layout, and writes the config (your previous one is kept as `config.json.backup`).
-Quit Divvy afterwards so the two are not fighting over the same keys.
+Reads Divvy's own preferences, converts every saved shortcut into a Snap It layout,
+and writes the config (your previous one is kept as `config.json.backup`). Quit
+Divvy afterwards so the two are not fighting over the same keys.
 
-## Project layout
+</details>
+
+<details>
+<summary><b>Build from source</b></summary>
+
+Needed only if you want to change it. Requires Apple's Command Line Tools
+(`xcode-select --install`); Xcode is **not** needed. A clean build takes about
+12 seconds.
+
+```bash
+git clone https://github.com/bunlongheng/snap-it
+cd snap-it
+make install
+```
+
+> **If you are going to rebuild:** an ad hoc signature changes with every build, and
+> macOS ties the Accessibility grant to the binary it saw, so a rebuild silently loses
+> the permission while System Settings still shows it enabled. Two ways out:
+>
+> ```bash
+> make signing-identity                              # once: a stable self signed identity
+> make install SIGN_IDENTITY="Snap It Local Signing" # the grant now survives rebuilds
+> ```
+>
+> Or keep ad hoc signing and run `make reset-permission` after each rebuild, then
+> approve it again.
+
+</details>
+
+<details>
+<summary><b>Updating, and publishing a release</b></summary>
+
+To update, re-run the install command. For the reason above, a new release is a new
+binary, so macOS asks you to switch Snap It on once more after an update.
+
+To publish one, from a clean tree on `main`:
+
+```bash
+make release VERSION=1.0.1
+```
+
+That bumps `VERSION`, runs the tests, commits, tags and pushes. The tag triggers CI,
+which builds the universal app and publishes the release. `install.sh` always points
+at the latest release, so there is nothing else to change.
+
+</details>
+
+<details>
+<summary><b>Development</b></summary>
+
+```bash
+make test              # run the test suite
+make lint              # compiler warnings, long lines, trailing whitespace, leftover markers
+make app               # build build/Snap It.app without installing it
+make run               # build it and launch it from ./build
+make install           # build it, install to /Applications, launch it
+make signing-identity  # create a self signed identity so the grant survives rebuilds
+make reset-permission  # clear the Accessibility grant after an ad hoc rebuild
+make import-divvy      # convert Divvy's shortcuts into a Snap It config
+make uninstall         # remove /Applications/Snap It.app
+make release VERSION=1.0.1  # bump, tag and push; CI publishes the release
+make dev-web           # serve the landing page on http://localhost:4477
+make clean             # delete ./build
+```
+
+There is no package manager step and nothing to resolve. `make` calls `swiftc`
+directly, which is why a clean build is so quick.
 
 ```
 Sources/SnapItKit/   pure logic: layouts, placement maths, shortcut parsing, config file
@@ -238,27 +242,13 @@ web/                 the landing page deployed to Vercel
 | `SnapIt/HotKeyCenter.swift` | Registers the global shortcuts through the system hot key API |
 | `SnapIt/ScreenGeometry.swift` | Converts between AppKit and Accessibility coordinates |
 
-## Development
+The shortcut table above is generated from `Config.standard` by `make sync-defaults`.
+Edit the defaults in `Sources/SnapItKit/Config.swift`, never the table.
 
-```bash
-make test              # run the test suite
-make lint              # compiler warnings, long lines, trailing whitespace, leftover markers
-make app               # build build/Snap It.app without installing it
-make run               # build it and launch it from ./build
-make install           # build it, install to /Applications, launch it
-make signing-identity  # create a self signed identity so the grant survives rebuilds
-make reset-permission  # clear the Accessibility grant after an ad hoc rebuild
-make import-divvy      # convert Divvy's shortcuts into a Snap It config
-make uninstall         # remove /Applications/Snap It.app
-make release VERSION=1.0.1  # bump, tag and push; CI publishes the release
-make dev-web           # serve the landing page on http://localhost:4477
-make clean             # delete ./build
-```
+</details>
 
-There is no package manager step and nothing to resolve. `make` calls `swiftc`
-directly, which is why a clean build takes about ten seconds.
-
-## Why it is this small
+<details>
+<summary><b>How it stays small</b></summary>
 
 - **Fractions, not pixels.** Four numbers between 0 and 1 describe a layout, so
   multiple displays need no special handling.
@@ -268,44 +258,37 @@ directly, which is why a clean build takes about ten seconds.
 - **One source of truth.** The menu, the settings window and the JSON file are the
   same state, so there is no syncing code to get wrong.
 
-## Security notes
+</details>
+
+<details>
+<summary><b>Security</b></summary>
 
 - The only permission requested is Accessibility, the minimum needed to move a
   window that belongs to another app.
 - No network calls, no analytics, no crash reporting, no login item unless you ask
   for one.
 - The config file is the only thing written to disk, under the app's own directory.
+- **No environment variables.** The app reads none and stores no credentials, so
+  there is no `.env` anywhere in this project and nothing to keep out of the repo.
 
-## Environment variables
+</details>
 
-**None.** The app reads no environment variables and stores no credentials. The
-landing page in `web/` is static and needs none either, so there is no `.env` file
-anywhere in this project and nothing to keep out of the repository.
+<details>
+<summary><b>Deploying the landing page</b></summary>
 
-Deploying the landing page needs the usual Vercel account credentials, which live
-in your Vercel account rather than in this repo:
-
-| Name | Where it lives | Needed for |
-|---|---|---|
-| `VERCEL_TOKEN` | Your Vercel account, or the GitHub repository secrets | Deploying from CI instead of the dashboard |
-
-## Deploying the landing page
-
-`vercel.json` is set up for a static deploy with no build step:
-
-| Setting | Value |
-|---|---|
-| Framework | none |
-| Build command | none |
-| Install command | none |
-| Output directory | `web` |
+`vercel.json` is set up for a static deploy with no build step: no framework, no
+build command, no install command, output directory `web`.
 
 ```bash
 vercel --prod     # or connect the repo in the Vercel dashboard
 ```
 
 Security headers (CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`,
-`Permissions-Policy`) are set in `vercel.json` for every response.
+`Permissions-Policy`) are set in `vercel.json` for every response. Deploying from CI
+instead of the dashboard needs a `VERCEL_TOKEN` in the repository secrets; it lives
+in your Vercel account, never in this repo.
+
+</details>
 
 ## Licence
 
