@@ -32,23 +32,62 @@ and no background helper.
 | | |
 |---|---|
 | macOS | 13 Ventura or newer, Apple silicon or Intel |
-| To build | Apple's Command Line Tools (`xcode-select --install`). Xcode is **not** needed |
+| To install | Nothing. The release is a prebuilt universal app |
 | To run | The Accessibility permission, which is what lets any app move another app's windows |
+| To build (optional) | Apple's Command Line Tools (`xcode-select --install`). Xcode is **not** needed |
 
 ## Install
+
+```bash
+curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
+```
+
+That downloads the prebuilt universal app (2.2 MB), puts it in `/Applications`
+and launches it. Nothing to compile, so no Xcode and no Command Line Tools.
+The 16 layouts below are already configured, so there is nothing to set up after.
+
+Then **one** manual step, because macOS refuses to let any installer grant it:
+
+| Your macOS | Allow Snap It to move windows |
+|---|---|
+| 15 Sequoia, 26 Tahoe | Snap It asks on launch. Click **Open System Settings**, then switch **Snap It** on. It is already in the list. |
+| 13 Ventura, 14 Sonoma | Same, but if Snap It is not listed under **System Settings → Privacy & Security → Accessibility**, click **+**, press `⌘⇧G`, enter `/Applications` and pick `Snap It.app`. |
+
+That is the whole install. Press `⌥⌘←` on any window to check it worked.
+
+> **Launched it and nothing happened?** That is expected. Snap It has no window,
+> no Dock icon and no entry in the app switcher. It lives as a small **rectangle
+> split down the middle** at the right hand end of the menu bar, and clicking that
+> icon is how you reach all 16 layouts and Settings. If a window refuses to move,
+> the Accessibility switch above is still off: Snap It beeps instead of moving
+> anything until it is on.
+
+<details>
+<summary>What the script does, before you pipe it to bash</summary>
+
+Read it first if you would rather: <https://snap-it-bheng.vercel.app/install.sh>.
+It downloads [the latest release](https://github.com/bunlongheng/snap-it/releases/latest),
+checks the file really is a zip, unpacks it with `ditto` so the code signature
+survives, moves it to `/Applications` (or `~/Applications` if that is not
+writable), clears the quarantine flag and opens it. No `sudo`, nothing written
+outside `/Applications`.
+
+The quarantine flag is cleared because the app is signed but not notarized, so
+Gatekeeper would otherwise block it. Clearing the flag is exactly what right
+clicking the app and choosing **Open** does.
+
+</details>
+
+### Or build it from source
+
+Recommended if you want to change it. Needs Apple's Command Line Tools
+(`xcode-select --install`); a clean build takes about 12 seconds.
 
 ```bash
 git clone https://github.com/bunlongheng/snap-it
 cd snap-it
 make install
 ```
-
-`make install` builds a universal binary, assembles `Snap It.app`, copies it to
-`/Applications` and launches it.
-
-Then allow it to move windows:
-
-**System Settings → Privacy & Security → Accessibility → Snap It**
 
 > **If you are going to rebuild:** an ad hoc signature changes with every build, and
 > macOS ties the Accessibility grant to the binary it saw, so a rebuild silently loses
@@ -61,6 +100,11 @@ Then allow it to move windows:
 >
 > Or keep ad hoc signing and run `make reset-permission` after each rebuild, then
 > approve it again.
+
+### Updating
+
+Re-run the install command. For the same reason as above, a new release is a new
+binary, so macOS asks you to switch Snap It on once more after an update.
 
 ## Default shortcuts
 
@@ -142,23 +186,16 @@ layouts is reported rather than guessed at, and is never overwritten.
 
 ## Setting it up on another Mac
 
-Cloning and building is the recommended path, not a fallback. A build made on the
-machine it runs on is never quarantined by Gatekeeper, whereas a downloaded app that
-is not notarized has to be talked past it.
-
 ```bash
-git clone https://github.com/bunlongheng/snap-it
-cd snap-it
-make signing-identity                              # once per machine
-make install SIGN_IDENTITY="Snap It Local Signing"
+curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
 ```
 
 Then two things are per-machine and cannot be scripted:
 
 | | |
 |---|---|
-| **Accessibility** | Approve Snap It once in System Settings. macOS deliberately refuses to let this be automated, so it is one manual toggle on every Mac, forever. |
-| **Your layouts** | The defaults are already the shortcut set below, so most people need nothing. To carry over a customised set, copy `~/Library/Application Support/SnapIt/config.json` across and restart the app. |
+| **Accessibility** | Approve Snap It once, as in [Install](#install). macOS deliberately refuses to let this be automated, so it is one manual toggle on every Mac, forever. |
+| **Your layouts** | The defaults are already the shortcut set above, so most people need nothing. To carry over a customised set, copy `~/Library/Application Support/SnapIt/config.json` across and restart the app. |
 
 ## Coming from Divvy
 

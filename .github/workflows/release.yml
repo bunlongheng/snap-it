@@ -1,0 +1,44 @@
+name: Release
+
+# Tag a version and this publishes the prebuilt app, which is what
+# web/install.sh downloads:
+#
+#   git tag v1.0.0 && git push origin v1.0.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        run: make test
+
+      - name: Build the universal app bundle
+        run: make app
+
+      - name: Check the bundle
+        run: |
+          lipo -info "build/Snap It.app/Contents/MacOS/SnapIt" | grep -q "arm64 x86_64"
+          test -f "build/Snap It.app/Contents/Resources/AppIcon.icns"
+
+      # ditto is the only archiver that preserves a bundle's code signature,
+      # and the only one whose output the installer can unpack intact.
+      - name: Zip it
+        run: ditto -c -k --keepParent "build/Snap It.app" Snap-It-universal.zip
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" Snap-It-universal.zip \
+            --title "Snap It ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag
