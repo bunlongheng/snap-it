@@ -44,7 +44,7 @@
       <div class="cta">
         <button class="copy" id="copy" type="button" aria-label="Copy the install command">
           <span class="k">$</span>
-          <span id="cmd">git clone https://github.com/bunlongheng/snap-it &amp;&amp; cd snap-it &amp;&amp; make install</span>
+          <span id="cmd">curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash</span>
           <span class="tick" aria-hidden="true">copied</span>
         </button>
         <a class="ghost" href="https://github.com/bunlongheng/snap-it">Read the source</a>
@@ -92,22 +92,28 @@
     <div class="wrap">
       <h2>Install</h2>
       <p class="sub">
-        No Xcode needed. The Swift toolchain in Apple's Command Line Tools is enough,
-        and the build produces a universal binary for Apple silicon and Intel.
+        One command. It downloads the prebuilt universal app, 2.2 MB for Apple silicon
+        and Intel, and launches it. Nothing to compile, so no Xcode and no Command Line Tools.
       </p>
       <div class="two">
-        <pre><code><span class="c-com"># 1. build and install to /Applications</span>
-git clone https://github.com/bunlongheng/snap-it
-cd snap-it
-make install
+        <pre><code><span class="c-com"># 1. download, install, launch</span>
+curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
 
-<span class="c-com"># 2. allow it to move windows</span>
-<span class="c-com">#    System Settings &gt; Privacy &amp; Security</span>
-<span class="c-com">#    &gt; Accessibility &gt; Snap It</span>
+<span class="c-com"># 2. allow it to move windows (see the table)</span>
 
-<span class="c-com"># 3. coming from Divvy? bring your layouts</span>
+<span class="c-com"># 3. press cmd alt left on any window. Done.</span>
+
+<span class="c-com"># coming from Divvy? bring your layouts over</span>
 make import-divvy</code></pre>
         <div class="cards" style="grid-template-columns: 1fr">
+          <div class="card">
+            <h3>It lives in the menu bar</h3>
+            <p>No window, no Dock icon, no app switcher entry. After it launches, look for a small rectangle split down the middle at the right of your menu bar. Clicking it is how you reach every layout and Settings.</p>
+          </div>
+          <div class="card">
+            <h3>Nothing to configure</h3>
+            <p>All 16 layouts ship already bound to the Divvy key set, so the app is useful the second it launches. Redraw or rebind any of them later in Settings.</p>
+          </div>
           <div class="card">
             <h3>Accessibility, and nothing else</h3>
             <p>Moving another app's window is the one privileged thing Snap It does, so it is the one permission it asks for. No screen recording, no input monitoring, no network access.</p>
@@ -118,6 +124,31 @@ make import-divvy</code></pre>
           </div>
         </div>
       </div>
+
+      <h3 style="margin-top:2.4rem">The one step macOS will not let an installer do</h3>
+      <p class="sub">
+        Snap It asks for Accessibility the moment it launches. Click
+        <strong>Open System Settings</strong> on that prompt and switch Snap It on.
+        If you dismissed it, here is where it lives on your version.
+      </p>
+      <table class="osnote">
+        <thead><tr><th>Your macOS</th><th>Where to switch Snap It on</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>15 Sequoia<br>26 Tahoe</td>
+            <td>System Settings &gt; Privacy &amp; Security &gt; Accessibility. Snap It is already listed once it has asked.</td>
+          </tr>
+          <tr>
+            <td>13 Ventura<br>14 Sonoma</td>
+            <td>System Settings &gt; Privacy &amp; Security &gt; Accessibility. If Snap It is not listed, click <strong>+</strong>, press <kbd>cmd</kbd> <kbd>shift</kbd> <kbd>G</kbd>, enter <code>/Applications</code> and pick <code>Snap It.app</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sub" style="margin-top:1.4rem">
+        Would rather read the script before piping it to bash? It is right here:
+        <a href="/install.sh">install.sh</a>. Prefer to build it yourself?
+        <a href="https://github.com/bunlongheng/snap-it#or-build-it-from-source">Clone and run <code>make install</code></a>.
+      </p>
     </div>
   </section>
 
