@@ -24,9 +24,14 @@ jobs:
       - name: Build the universal app bundle
         run: make app
 
+      # lipo prints the slices in its own order, so check for each one
+      # independently rather than assuming how they are spelled out.
       - name: Check the bundle
         run: |
-          lipo -info "build/Snap It.app/Contents/MacOS/SnapIt" | grep -q "arm64 x86_64"
+          archs=$(lipo -info "build/Snap It.app/Contents/MacOS/SnapIt")
+          echo "$archs"
+          echo "$archs" | grep -q arm64
+          echo "$archs" | grep -q x86_64
           test -f "build/Snap It.app/Contents/Resources/AppIcon.icns"
 
       # ditto is the only archiver that preserves a bundle's code signature,

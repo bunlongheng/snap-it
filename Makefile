@@ -21,7 +21,7 @@ SIGN_IDENTITY ?= -
 ARCHS      := arm64 x86_64
 FLAGS      := -O -swift-version 5 -framework Cocoa -framework Carbon -framework ServiceManagement
 
-.PHONY: all build app test lint run install uninstall reset-permission signing-identity sync-defaults import-divvy clean dev-web
+.PHONY: all build app test lint run install uninstall reset-permission signing-identity sync-defaults import-divvy clean dev-web release
 
 all: app
 
@@ -95,6 +95,21 @@ sync-defaults:
 ## Import Divvy's saved shortcuts into the Snap It config.
 import-divvy:
 	@/usr/bin/python3 scripts/import-divvy.py
+
+## Ship a new version: bump VERSION, tag it, push. CI builds the universal
+## app and publishes the release that web/install.sh downloads.
+##   make release VERSION=1.0.1
+release:
+	@test -n "$(VERSION)" || { echo "usage: make release VERSION=1.0.1"; exit 1; }
+	@git diff --quiet && git diff --cached --quiet || { echo "working tree is dirty, commit first"; exit 1; }
+	@test -z "$$(git tag -l v$(VERSION))" || { echo "tag v$(VERSION) already exists"; exit 1; }
+	@sed -i '' 's/^VERSION    := .*/VERSION    := $(VERSION)/' Makefile
+	@$(MAKE) --no-print-directory test >/dev/null && echo "  tests pass"
+	@git add Makefile && git commit -q -m "release: v$(VERSION)"
+	@git tag v$(VERSION)
+	@git push -q origin main && git push -q origin v$(VERSION)
+	@echo "pushed v$(VERSION). CI is building the release now:"
+	@echo "  https://github.com/bunlongheng/snap-it/actions"
 
 ## Serve the landing page locally.
 dev-web:

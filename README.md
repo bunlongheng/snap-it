@@ -106,6 +106,16 @@ make install
 Re-run the install command. For the same reason as above, a new release is a new
 binary, so macOS asks you to switch Snap It on once more after an update.
 
+To publish an update, from a clean tree on `main`:
+
+```bash
+make release VERSION=1.0.1
+```
+
+That bumps `VERSION`, runs the tests, commits, tags and pushes. The tag triggers
+CI, which builds the universal app and publishes the release that `install.sh`
+downloads. Nothing else to do: `install.sh` always points at the latest release.
+
 ## Default shortcuts
 
 <!-- defaults:start -->
@@ -240,6 +250,7 @@ make signing-identity  # create a self signed identity so the grant survives reb
 make reset-permission  # clear the Accessibility grant after an ad hoc rebuild
 make import-divvy      # convert Divvy's shortcuts into a Snap It config
 make uninstall         # remove /Applications/Snap It.app
+make release VERSION=1.0.1  # bump, tag and push; CI publishes the release
 make dev-web           # serve the landing page on http://localhost:4477
 make clean             # delete ./build
 ```
