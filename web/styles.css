@@ -442,6 +442,8 @@ section > .wrap > p.sub {
 /* A 6 x 6 miniature of the hero grid, one per row, so "Center Two Thirds"
    reads as a shape and not just a name. Two nodes per row rather than 36
    cells: the grid is painted, only the region is an element. */
+.gap-above { margin-top: 1.4rem; }
+
 .mini {
   position: relative;
   display: block;

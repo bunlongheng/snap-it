@@ -49,4 +49,10 @@ report "trailing whitespace" "$(grep -rn ' $' $all || true)"
 echo "==> leftover markers"
 report "markers" "$(grep -rnE 'TODO|FIXME|print\(' $all || true)"
 
+# The landing page is served under style-src 'self', so the browser drops any
+# style attribute. It fails silently and only in production, which has caught
+# us twice. Set custom properties through the CSSOM instead.
+echo "==> inline style attributes (blocked by the site CSP)"
+report "inline styles" "$(grep -rn 'style="' web/index.html web/demo.js || true)"
+
 exit $status

@@ -53,10 +53,19 @@
     }
   }
 
+  // Built through the CSSOM rather than a style attribute: the page is served
+  // under style-src 'self', which strips inline style attributes, and the
+  // region would come out with no size and no colour.
   function mini(layout) {
-    return '<span class="mini" aria-hidden="true" style="' +
-      "--mx:" + layout.x + ";--my:" + layout.y +
-      ";--mw:" + layout.w + ";--mh:" + layout.h + '"><i></i></span>';
+    var box = document.createElement("span");
+    box.className = "mini";
+    box.setAttribute("aria-hidden", "true");
+    box.style.setProperty("--mx", layout.x);
+    box.style.setProperty("--my", layout.y);
+    box.style.setProperty("--mw", layout.w);
+    box.style.setProperty("--mh", layout.h);
+    box.appendChild(document.createElement("i"));
+    return box;
   }
 
   function percent(value) {
@@ -69,8 +78,9 @@
     row.innerHTML =
       "<td>" + layout.name + "</td>" +
       "<td><kbd>" + layout.key + "</kbd></td>" +
-      "<td>" + mini(layout) + "</td>" +
+      "<td class=\"region\"></td>" +
       "<td>" + percent(layout.w) + " × " + percent(layout.h) + "</td>";
+    row.querySelector(".region").appendChild(mini(layout));
     row.addEventListener("mouseenter", function () { stop(); show(n); });
     row.addEventListener("focus", function () { stop(); show(n); });
     rows.appendChild(row);
