@@ -490,13 +490,6 @@ kbd {
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
-/* Four short cards read better as a row under the command than as a column
-   beside it, which left a hole under the one line install. */
-.install-cards {
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  margin-top: 20px;
-}
-
 .card {
   position: relative;
   overflow: hidden;

@@ -24,7 +24,7 @@
     <span class="name">SNAP IT</span>
     <nav>
       <a href="#keys">Shortcuts</a>
-      <a href="#install">Install</a>
+      <a href="#install">Setup</a>
       <a href="#config">Config</a>
       <a href="https://github.com/bunlongheng/snap-it">Source</a>
     </nav>
@@ -56,7 +56,7 @@
         <div class="tile" id="tile">window</div>
       </div>
       <figcaption>
-        <span>6 &times; 6 grid, the one Divvy uses</span>
+        <span>6 &times; 6 grid</span>
         <span><b id="demo-name">Left Half</b> &nbsp;<span id="demo-key">&#8997;&#8984;&#8592;</span></span>
       </figcaption>
     </figure>
@@ -81,7 +81,7 @@
       </p>
       <table class="keys">
         <thead>
-          <tr><th>Layout</th><th>Shortcut</th><th>Where</th><th>Region</th></tr>
+          <tr><th>Layout</th><th>Shortcut</th><th>Region</th><th>Size</th></tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
@@ -90,43 +90,16 @@
 
   <section id="install">
     <div class="wrap">
-      <h2>Install</h2>
+      <h2>Setup</h2>
       <p class="sub">
-        One command. 2.2 MB, universal, nothing to compile.
+        macOS will not let any installer grant Accessibility, so there is one
+        manual step. Snap It asks on launch: click <strong>Open System Settings</strong>
+        and switch it on.
+        <a href="https://github.com/bunlongheng/snap-it#install">Steps for your macOS</a>.
       </p>
-      <pre><code>curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
-
-<span class="c-com"># coming from Divvy</span>
-make import-divvy</code></pre>
-      <div class="cards install-cards">
-          <div class="card">
-            <h3>It lives in the menu bar</h3>
-            <p>No window, no Dock icon. It is the split rectangle at the right of your menu bar, and that icon is the whole interface.</p>
-          </div>
-          <div class="card">
-            <h3>Nothing to configure</h3>
-            <p>All 16 layouts ship bound to the Divvy key set. Rebind any of them in Settings.</p>
-          </div>
-          <div class="card">
-            <h3>Accessibility, and nothing else</h3>
-            <p>The only permission it asks for. No screen recording, no input monitoring, no network.</p>
-          </div>
-          <div class="card">
-            <h3>No keylogger in the loop</h3>
-            <p>Shortcuts go through the system hot key API, so it never sees another keystroke.</p>
-          </div>
-      </div>
-
-      <p class="sub" style="margin-top:2.2rem">
-        One manual step: macOS will not let any installer grant Accessibility.
-        Snap It asks on launch, so click <strong>Open System Settings</strong> and
-        switch it on. Dismissed it, or on Ventura or Sonoma where it may not be
-        listed yet? <a href="https://github.com/bunlongheng/snap-it#install">The
-        steps for your macOS are in the readme</a>.
-      </p>
-      <p class="sub" style="margin-top:1.2rem">
-        Read the script first: <a href="/install.sh">install.sh</a>. Or
-        <a href="https://github.com/bunlongheng/snap-it#install">build it yourself</a>.
+      <p class="sub" style="margin-top:1.4rem">
+        Read the script before you pipe it: <a href="/install.sh">install.sh</a>. Or
+        <a href="https://github.com/bunlongheng/snap-it#install">build it from source</a>.
       </p>
     </div>
   </section>
