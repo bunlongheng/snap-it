@@ -58,6 +58,12 @@
     }
   }
 
+  function mini(layout) {
+    return '<span class="mini" aria-hidden="true" style="' +
+      "--mx:" + layout.x + ";--my:" + layout.y +
+      ";--mw:" + layout.w + ";--mh:" + layout.h + '"><i></i></span>';
+  }
+
   function percent(value) {
     return Math.round(value * 100) + "%";
   }
@@ -68,6 +74,7 @@
     row.innerHTML =
       "<td>" + layout.name + "</td>" +
       "<td><kbd>" + layout.key + "</kbd></td>" +
+      "<td>" + mini(layout) + "</td>" +
       "<td>" + percent(layout.w) + " × " + percent(layout.h) + "</td>";
     row.addEventListener("mouseenter", function () { stop(); show(n); });
     row.addEventListener("focus", function () { stop(); show(n); });
