@@ -14,13 +14,7 @@
     { name: "Center Third", key: "⌥⌘3", x: 0.333333, y: 0, w: 0.333333, h: 1 },
     { name: "Right Third", key: "⌥⌘5", x: 0.666667, y: 0, w: 0.333333, h: 1 },
     { name: "Right Two Thirds", key: "⌥⌘2", x: 0.333333, y: 0, w: 0.666667, h: 1 },
-    { name: "Center Two Thirds", key: "⌃⌥⌘C", x: 0.166667, y: 0, w: 0.666667, h: 1 },
-    { name: "Top Left Sixth", key: "⌃⌥⌘1", x: 0, y: 0, w: 0.333333, h: 0.5 },
-    { name: "Top Middle Sixth", key: "⌃⌥⌘2", x: 0.333333, y: 0, w: 0.333333, h: 0.5 },
-    { name: "Top Right Sixth", key: "⌃⌥⌘3", x: 0.666667, y: 0, w: 0.333333, h: 0.5 },
-    { name: "Bottom Left Sixth", key: "⌃⌥⌘4", x: 0, y: 0.5, w: 0.333333, h: 0.5 },
-    { name: "Bottom Middle Sixth", key: "⌃⌥⌘5", x: 0.333333, y: 0.5, w: 0.333333, h: 0.5 },
-    { name: "Bottom Right Sixth", key: "⌃⌥⌘6", x: 0.666667, y: 0.5, w: 0.333333, h: 0.5 }
+    { name: "Center Two Thirds", key: "⌃⌥⌘C", x: 0.166667, y: 0, w: 0.666667, h: 1 }
   ];
 /* defaults:end */
 

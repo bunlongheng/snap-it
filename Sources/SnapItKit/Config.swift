@@ -53,8 +53,8 @@ struct Config: Codable, Hashable, Sendable {
 }
 
 extension Config {
-    /// Shipped defaults: a 6 by 6 grid with halves, thirds and sixths, on the
-    /// key combinations Divvy users already have in their fingers.
+    /// Shipped defaults: a 6 by 6 grid with halves and thirds, on the key
+    /// combinations most window managers already use.
     static let standard = Config(
         gap: 0,
         grid: .standard,
@@ -69,12 +69,6 @@ extension Config {
             .make("right-third", "Right Third", 2.0 / 3, 0, 1.0 / 3, 1, "cmd+alt+5"),
             .make("right-two-thirds", "Right Two Thirds", 1.0 / 3, 0, 2.0 / 3, 1, "cmd+alt+2"),
             .make("center-two-thirds", "Center Two Thirds", 1.0 / 6, 0, 2.0 / 3, 1, "cmd+ctrl+alt+c"),
-            .make("top-left-sixth", "Top Left Sixth", 0, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+1"),
-            .make("top-middle-sixth", "Top Middle Sixth", 1.0 / 3, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+2"),
-            .make("top-right-sixth", "Top Right Sixth", 2.0 / 3, 0, 1.0 / 3, 0.5, "cmd+ctrl+alt+3"),
-            .make("bottom-left-sixth", "Bottom Left Sixth", 0, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+4"),
-            .make("bottom-middle-sixth", "Bottom Middle Sixth", 1.0 / 3, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+5"),
-            .make("bottom-right-sixth", "Bottom Right Sixth", 2.0 / 3, 0.5, 1.0 / 3, 0.5, "cmd+ctrl+alt+6"),
         ]
     )
 }

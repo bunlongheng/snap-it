@@ -25,7 +25,7 @@ curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
 ```
 
 macOS 13 or newer, Apple silicon or Intel. Downloads a 2.2 MB prebuilt app,
-installs it and launches it. Nothing to compile. All 16 layouts below are already
+installs it and launches it. Nothing to compile. All 10 layouts below are already
 bound, so there is nothing to configure after.
 
 Then **one** manual step, because macOS refuses to let any installer grant it:
@@ -57,12 +57,6 @@ Press `⌥⌘←` on any window to check it worked.
 | Right Third | `⌥⌘5` | 33% x 100% |
 | Right Two Thirds | `⌥⌘2` | 67% x 100% |
 | Center Two Thirds | `⌃⌥⌘C` | 67% x 100% |
-| Top Left Sixth | `⌃⌥⌘1` | 33% x 50% |
-| Top Middle Sixth | `⌃⌥⌘2` | 33% x 50% |
-| Top Right Sixth | `⌃⌥⌘3` | 33% x 50% |
-| Bottom Left Sixth | `⌃⌥⌘4` | 33% x 50% |
-| Bottom Middle Sixth | `⌃⌥⌘5` | 33% x 50% |
-| Bottom Right Sixth | `⌃⌥⌘6` | 33% x 50% |
 <!-- defaults:end -->
 
 Any layout can be renamed, redrawn on a grid, or rebound. If another app already

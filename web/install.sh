@@ -102,7 +102,7 @@ cat <<BANNER
 
   Snap It has no window and no Dock icon on purpose. Look at the right hand end
   of your menu bar for a small ${B}rectangle split down the middle${R}. Click it and
-  you will see all 16 layouts. That icon is the whole interface.
+  you will see every layout. That icon is the whole interface.
 
   ${D}Not there? A full menu bar can hide icons behind the notch. Hold Cmd and drag${R}
   ${D}a menu bar icon left to make room, or check Control Centre in System Settings.${R}
@@ -143,7 +143,7 @@ cat <<DONE
     ${B}Cmd Alt Left${R}   left half        ${B}Cmd Alt Up${R}  maximise
     ${B}Cmd Alt Right${R}  right half       ${B}Cmd Alt 1/3/5${R}  thirds
 
-  16 layouts are set up already, nothing to configure. The menu bar icon
+  Every layout is set up already, nothing to configure. The menu bar icon
   lists them all, and Settings lets you redraw or rebind any of them.
 
   ${D}If the window does not move, the Accessibility switch above is still off.${R}
