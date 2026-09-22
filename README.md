@@ -6,8 +6,8 @@
 
 **Press a key, the focused macOS window lands exactly where you saved it.**
 
-A menu bar app in the spirit of Divvy: saved window positions, global shortcuts,
-one readable config file. Native Swift, no third party dependencies, 1.2 MB.
+Saved window positions, global shortcuts, one readable config file.
+Native Swift, no third party dependencies, a 1.2 MB universal binary.
 
 [![CI](https://github.com/bunlongheng/snap-it/actions/workflows/ci.yml/badge.svg)](https://github.com/bunlongheng/snap-it/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
@@ -69,7 +69,7 @@ owns one of these, Snap It says so in its menu rather than failing silently.
 
 Click the menu bar icon and choose **Settings**. Each layout has:
 
-- a **grid picker**, drag across it the way you would in Divvy
+- a **grid picker**, drag across it to set the region
 - a **shortcut recorder**, which releases Snap It's own keys while it listens so
   you can re-record a combination that is already in use
 

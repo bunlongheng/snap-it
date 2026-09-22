@@ -439,7 +439,7 @@ section > .wrap > p.sub {
   color: var(--ink);
 }
 
-/* A 6 x 6 miniature of the hero grid, one per row, so "Bottom Left Sixth"
+/* A 6 x 6 miniature of the hero grid, one per row, so "Center Two Thirds"
    reads as a shape and not just a name. Two nodes per row rather than 36
    cells: the grid is painted, only the region is an element. */
 .mini {

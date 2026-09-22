@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Divvy style region picker: drag across the grid to set where a layout puts
+/// Region picker: drag across the grid to set where a layout puts
 /// the window. Keyboard users get the percentage fields next to it, which edit
 /// the same values.
 struct GridPicker: View {

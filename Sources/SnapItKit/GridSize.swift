@@ -1,6 +1,6 @@
 import Foundation
 
-/// The grid the preferences picker snaps to, the way Divvy's grid works.
+/// The grid the preferences picker snaps to.
 /// Saved layouts are fractions, so changing the grid never moves an existing
 /// layout, it only changes what the picker can select.
 struct GridSize: Codable, Hashable {
