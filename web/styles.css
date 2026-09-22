@@ -17,6 +17,8 @@
   --cyan: #06b6d4;
   --blue: #3b82f6;
   --violet: #8b5cf6;
+  --lime: #84cc16;
+  --pink: #ec4899;
 
   --accent: var(--blue);
   --ok: var(--green);
@@ -398,14 +400,18 @@ section > .wrap > p.sub {
 
 .keys tbody tr { cursor: pointer; transition: background 0.14s; }
 
-.keys tbody tr:nth-child(8n + 1) { --row: var(--red); }
-.keys tbody tr:nth-child(8n + 2) { --row: var(--orange); }
-.keys tbody tr:nth-child(8n + 3) { --row: var(--amber); }
-.keys tbody tr:nth-child(8n + 4) { --row: var(--green); }
-.keys tbody tr:nth-child(8n + 5) { --row: var(--teal); }
-.keys tbody tr:nth-child(8n + 6) { --row: var(--cyan); }
-.keys tbody tr:nth-child(8n + 7) { --row: var(--blue); }
-.keys tbody tr:nth-child(8n + 8) { --row: var(--violet); }
+/* Ten layouts, ten steps around the wheel, so no two rows share a colour.
+   Cycle length matches the number of shipped layouts. */
+.keys tbody tr:nth-child(10n + 1) { --row: var(--red); }
+.keys tbody tr:nth-child(10n + 2) { --row: var(--orange); }
+.keys tbody tr:nth-child(10n + 3) { --row: var(--amber); }
+.keys tbody tr:nth-child(10n + 4) { --row: var(--lime); }
+.keys tbody tr:nth-child(10n + 5) { --row: var(--green); }
+.keys tbody tr:nth-child(10n + 6) { --row: var(--teal); }
+.keys tbody tr:nth-child(10n + 7) { --row: var(--cyan); }
+.keys tbody tr:nth-child(10n + 8) { --row: var(--blue); }
+.keys tbody tr:nth-child(10n + 9) { --row: var(--violet); }
+.keys tbody tr:nth-child(10n + 10) { --row: var(--pink); }
 
 .keys tbody td:first-child::before {
   content: counter(step);

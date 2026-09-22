@@ -18,8 +18,9 @@
   ];
 /* defaults:end */
 
-  var HUES = ["#ef4444", "#f97316", "#eab308", "#22c55e",
-              "#14b8a6", "#06b6d4", "#3b82f6", "#8b5cf6"];
+  // Same ten steps as the row colours in styles.css, in the same order.
+  var HUES = ["#ef4444", "#f97316", "#eab308", "#84cc16", "#22c55e",
+              "#14b8a6", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
 
   var tile = document.getElementById("tile");
   var rows = document.getElementById("rows");
