@@ -380,21 +380,6 @@ section > .wrap > p.sub {
 
 .keys { width: 100%; border-collapse: collapse; font-size: 13px; }
 
-/* Where to switch Snap It on, per macOS version. Reference, not clickable. */
-.osnote { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 1rem; }
-.osnote th {
-  text-align: left;
-  font-weight: 400;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  padding: 0 14px 10px;
-  border-bottom: var(--rule);
-}
-.osnote td { padding: 13px 14px; border-bottom: var(--rule); vertical-align: top; line-height: 1.6; }
-.osnote td:first-child { white-space: nowrap; color: var(--ink-dim); }
-
 
 .keys th {
   text-align: left;
@@ -504,6 +489,13 @@ kbd {
 /* cards + code */
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+/* Four short cards read better as a row under the command than as a column
+   beside it, which left a hole under the one line install. */
+.install-cards {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 20px;
+}
 
 .card {
   position: relative;

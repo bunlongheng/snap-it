@@ -37,9 +37,8 @@
       <p class="eyebrow">macOS 13+ &middot; native swift &middot; MIT</p>
       <h1>Windows<span class="split">snap shut</span></h1>
       <p class="lede">
-        Press a key, the focused window lands exactly where you saved it.
-        <strong>1.2 MB</strong>, no dependencies, no background daemon, no account.
-        It sits in the menu bar and otherwise does nothing at all.
+        Press a key, the focused window lands where you saved it.
+        <strong>1.2 MB</strong>, no dependencies, no daemon, no account.
       </p>
       <div class="cta">
         <button class="copy" id="copy" type="button" aria-label="Copy the install command">
@@ -78,8 +77,7 @@
     <div class="wrap">
       <h2>The default keys</h2>
       <p class="sub">
-        Every one of them is a line in a JSON file, so rebind whatever you like.
-        Hover a row to see where the window lands.
+        Every one is a line in a JSON file. Hover a row to see where it lands.
       </p>
       <table class="keys">
         <thead>
@@ -94,62 +92,41 @@
     <div class="wrap">
       <h2>Install</h2>
       <p class="sub">
-        One command. It downloads the prebuilt universal app, 2.2 MB for Apple silicon
-        and Intel, and launches it. Nothing to compile, so no Xcode and no Command Line Tools.
+        One command. 2.2 MB, universal, nothing to compile.
       </p>
-      <div class="two">
-        <pre><code><span class="c-com"># 1. download, install, launch</span>
-curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
+      <pre><code>curl -fsSL https://snap-it-bheng.vercel.app/install.sh | bash
 
-<span class="c-com"># 2. allow it to move windows (see the table)</span>
-
-<span class="c-com"># 3. press cmd alt left on any window. Done.</span>
-
-<span class="c-com"># coming from Divvy? bring your layouts over</span>
+<span class="c-com"># coming from Divvy</span>
 make import-divvy</code></pre>
-        <div class="cards" style="grid-template-columns: 1fr">
+      <div class="cards install-cards">
           <div class="card">
             <h3>It lives in the menu bar</h3>
-            <p>No window, no Dock icon, no app switcher entry. After it launches, look for a small rectangle split down the middle at the right of your menu bar. Clicking it is how you reach every layout and Settings.</p>
+            <p>No window, no Dock icon. It is the split rectangle at the right of your menu bar, and that icon is the whole interface.</p>
           </div>
           <div class="card">
             <h3>Nothing to configure</h3>
-            <p>All 16 layouts ship already bound to the Divvy key set, so the app is useful the second it launches. Redraw or rebind any of them later in Settings.</p>
+            <p>All 16 layouts ship bound to the Divvy key set. Rebind any of them in Settings.</p>
           </div>
           <div class="card">
             <h3>Accessibility, and nothing else</h3>
-            <p>Moving another app's window is the one privileged thing Snap It does, so it is the one permission it asks for. No screen recording, no input monitoring, no network access.</p>
+            <p>The only permission it asks for. No screen recording, no input monitoring, no network.</p>
           </div>
           <div class="card">
             <h3>No keylogger in the loop</h3>
-            <p>Shortcuts are registered with the system hot key API, so Snap It is handed the combinations you chose and never sees another keystroke.</p>
+            <p>Shortcuts go through the system hot key API, so it never sees another keystroke.</p>
           </div>
-        </div>
       </div>
 
-      <h3 style="margin-top:2.4rem">The one step macOS will not let an installer do</h3>
-      <p class="sub">
-        Snap It asks for Accessibility the moment it launches. Click
-        <strong>Open System Settings</strong> on that prompt and switch Snap It on.
-        If you dismissed it, here is where it lives on your version.
+      <p class="sub" style="margin-top:2.2rem">
+        One manual step: macOS will not let any installer grant Accessibility.
+        Snap It asks on launch, so click <strong>Open System Settings</strong> and
+        switch it on. Dismissed it, or on Ventura or Sonoma where it may not be
+        listed yet? <a href="https://github.com/bunlongheng/snap-it#install">The
+        steps for your macOS are in the readme</a>.
       </p>
-      <table class="osnote">
-        <thead><tr><th>Your macOS</th><th>Where to switch Snap It on</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>15 Sequoia<br>26 Tahoe</td>
-            <td>System Settings &gt; Privacy &amp; Security &gt; Accessibility. Snap It is already listed once it has asked.</td>
-          </tr>
-          <tr>
-            <td>13 Ventura<br>14 Sonoma</td>
-            <td>System Settings &gt; Privacy &amp; Security &gt; Accessibility. If Snap It is not listed, click <strong>+</strong>, press <kbd>cmd</kbd> <kbd>shift</kbd> <kbd>G</kbd>, enter <code>/Applications</code> and pick <code>Snap It.app</code>.</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="sub" style="margin-top:1.4rem">
-        Would rather read the script before piping it to bash? It is right here:
-        <a href="/install.sh">install.sh</a>. Prefer to build it yourself?
-        <a href="https://github.com/bunlongheng/snap-it#or-build-it-from-source">Clone and run <code>make install</code></a>.
+      <p class="sub" style="margin-top:1.2rem">
+        Read the script first: <a href="/install.sh">install.sh</a>. Or
+        <a href="https://github.com/bunlongheng/snap-it#install">build it yourself</a>.
       </p>
     </div>
   </section>
@@ -158,9 +135,8 @@ make import-divvy</code></pre>
     <div class="wrap">
       <h2>One file you can read</h2>
       <p class="sub">
-        Settings live in <code>~/Library/Application Support/SnapIt/config.json</code>.
-        Edit it by hand or use the grid picker in the settings window. Positions are
-        fractions, so a layout means the same thing on a laptop and on a 6K display.
+        One file: <code>~/Library/Application Support/SnapIt/config.json</code>.
+        Positions are fractions, so a layout means the same thing on a laptop and a 6K display.
       </p>
       <pre><code>{
   <span class="c-key">"gap"</span>: <span class="c-num">0</span>,
@@ -184,15 +160,15 @@ make import-divvy</code></pre>
       <div class="cards">
         <div class="card">
           <h3>Fractions, not pixels</h3>
-          <p>A layout is four numbers between 0 and 1. Every display, every resolution, every external monitor gets the same result with no per screen setup.</p>
+          <p>Four numbers between 0 and 1. Every display and resolution gets the same result.</p>
         </div>
         <div class="card">
           <h3>The system's own hot keys</h3>
-          <p>No event tap, no polling loop, no helper process. macOS wakes the app only when a registered combination is pressed.</p>
+          <p>No event tap, no polling loop. macOS wakes the app only on a registered combination.</p>
         </div>
         <div class="card">
           <h3>Nothing to configure twice</h3>
-          <p>The menu, the settings window and the JSON file are the same state. Change any one and the other two are already up to date.</p>
+          <p>The menu, the settings window and the JSON file are one state.</p>
         </div>
       </div>
     </div>
